@@ -1,0 +1,79 @@
+{
+  "name": "@caynansilva/e2e-open-meteo",
+  "version": "1.0.1",
+  "description": "Reusable Playwright E2E Testing Framework with Page Object Model architecture",
+  "scripts": {
+    "build": "tsc",
+    "test": "cucumber-js",
+    "test:feature": "cucumber-js",
+    "test:playwright": "playwright test",
+    "test:cucumber": "cucumber-js",
+    "typecheck": "tsc --noEmit",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "g2f": "ts-node tools/GherkinToFunctions/gherkin-to-functions.ts"
+  },
+  "keywords": [
+    "playwright",
+    "e2e",
+    "testing",
+    "framework",
+    "page-object-model",
+    "typescript",
+    "github-packages",
+    "cucumber",
+    "bdd"
+  ],
+  "homepage": "https://github.com/caynansilva/e2e-open-meteo#readme",
+  "bugs": {
+    "url": "https://github.com/caynansilva/e2e-open-meteo/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caynansilva/e2e-open-meteo.git",
+    "directory": "e2e-testing/e2e-pw"
+  },
+  "license": "MIT",
+  "author": "Caynan Ramos Silva",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "e2e-start": "bin/e2e-start.js"
+  },
+  "files": [
+    "dist",
+    "src",
+    "playwright.config.ts",
+    "tsconfig.json",
+    "scripts",
+    "bin",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@playwright/test": ">=1.40.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^12.5.0",
+    "@types/node": "^20.10.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^9.0.0",
+    "jiti": "^2.7.0",
+    "rimraf": "^5.0.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.3.0",
+    "typescript-eslint": "^8.69.0"
+  },
+  "peerDependencies": {
+    "@playwright/test": ">=1.40.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}

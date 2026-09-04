@@ -1,0 +1,9 @@
+{
+  "ignore_dirs": [
+    "../..",
+    "../../src",
+    "../../public",
+    "../../dist",
+    "../../node_modules"
+  ]
+}

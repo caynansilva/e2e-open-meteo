@@ -1,0 +1,22 @@
+# Ignore node_modules and other build artifacts
+node_modules
+
+# Playwright artifacts
+test-results
+reports
+screenshots
+docs/changelog/
+
+# Environment Files
+.env
+
+# Ignore build output
+dist
+.npmrc
+.codebase
+
+# AI Folder
+.skills
+.agents
+.vscode
+.claude

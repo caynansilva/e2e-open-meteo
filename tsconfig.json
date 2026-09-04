@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Playwright E2E Framework",
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "module": "CommonJS",
+    "moduleResolution": "bundler",
+
+    /* Emit */
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+
+    /* Strict Type Checking */
+    "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+
+    /* Module Resolution */
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+
+    //Property 'searchButton' has no initializer and is not definitely assigned in the constructor.ts(2564)
+    "strictPropertyInitialization": false,
+    "noPropertyAccessFromIndexSignature": false,
+
+
+    /* Path Aliases */
+    "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
+    "paths": {
+      "@core/*": ["./src/Core/*"],
+      "@utils/*": ["./src/Utils/*"],
+      "@types/*": ["./src/Types/*"],
+      "@factories/*": ["./src/Factories/*"],
+      "@support/*": ["./src/Support/*"]
+    },
+
+    /* Misc */
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test-results",
+    "e2e-specs"
+  ]
+}
