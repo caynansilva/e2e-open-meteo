@@ -4,6 +4,7 @@ Use this table to scan recent changes and validation status.
 
 | Date | Entry | Area | Validation |
 |------|-------|------|------------|
+| 2026-09-04 | [isolate-sc011-runner](./2026-09-04-2238-isolate-sc011-runner.md) | SC-01.1 Cucumber execution | pass |
 | 2026-09-04 | [split-gherkin-scenarios](./2026-09-04-1900-split-gherkin-scenarios.md) | Gherkin feature organization | partial (undefined pre-existing bindings) |
 | 2026-09-04 | [activity-ranking-cucumber-bindings](./2026-09-04-1821-activity-ranking-cucumber-bindings.md) | Activity Ranking Cucumber bindings | partial (typecheck blocked by missing FormPage) |
 | 2026-09-04 | [activity-feature-groups](./2026-09-04-1630-activity-feature-groups.md) | Activity Ranking Gherkin organization | partial (expected unbound steps) |

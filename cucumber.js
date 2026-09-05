@@ -1,15 +1,21 @@
-const hasExplicitFeaturePath = process.argv
+const path = require("node:path");
+
+const explicitFeaturePath = process.argv
   .slice(2)
-  .some((argument) => argument.includes(".feature"));
+  .find((argument) => argument.endsWith(".feature"));
+
+const featureSpec = explicitFeaturePath
+  ? `src/Tests/specs/${path.basename(explicitFeaturePath, ".feature")}.spec.ts`
+  : "src/Tests/specs/**/*.spec.ts";
 
 module.exports = {
   default: {
-    paths: hasExplicitFeaturePath ? [] : ["e2e-tests/**/*.feature"],
+    paths: explicitFeaturePath ? [] : ["e2e-tests/**/*.feature"],
     requireModule: ["ts-node/register", "tsconfig-paths/register"],
     require: [
       "src/Support/CucumberWorld.ts",
       "src/Support/hooks.ts",
-      "src/Tests/specs/**/*.spec.ts"
+      featureSpec
     ],
     format: ["progress"],
     publish: false

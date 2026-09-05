@@ -1,21 +1,35 @@
-// Steps generated from: [SC-01] - Validate city search and resolution
-import { world as cucumberWorld } from "@cucumber/cucumber";
-import { CucumberWorld } from "../../Support/CucumberWorld";
 
-export class Sc01ValidateCitySearchAndResolutionSteps {
-  private get world(): CucumberWorld {
-    return cucumberWorld as CucumberWorld;
+import { BaseClass } from "src/BaseClass";
+
+export class Sc01ValidateCitySearchAndResolutionSteps extends BaseClass {
+  public randomCity: string;
+
+  constructor(){
+    super();
+    this.testName = "[SC-01.1] - Retrieve activity rankings using an exact city name";
+    this.startTestMessage();
   }
-
+  
   public THE_USER_SENDS_A_REQUEST_WITH_A_VALID_AND_UNIQUE_CITY_NAME(): void {
-    throw new Error("TODO: Implement the user sends a request with a valid and unique city name");
+    this.randomCity = this.mockData.getRandomCityName();
   }
 
   public THE_API_RETURNS_THE_RESPONSE(): void {
-    throw new Error("TODO: Implement the API returns the response");
+    this.activityObject = this.mockData.returnWeatherSensitiveMockData(this.randomCity);
   }
 
   public VALIDATE_THAT_THE_RETURNED_CITY_NAME_MATCHES_THE_CITY_PROVIDED_IN_THE_REQUEST(): void {
-    throw new Error("TODO: Implement validate that the returned city name matches the city provided in the request");
+    this.actMgr.setCityActivities([this.activityObject]);
+    
+    this.assert(
+      this.actMgr.assertCityActivityExists(this.activityObject),
+      `Success! The field "City Name" exists in the contract!`,
+      `Fail! The field "City Name" DOES NOT exists in the contract!`,
+    );
+    this.assert(
+      this.actMgr.assertCityNameMatches(this.activityObject, this.randomCity),
+      `Success! The field "CityName" matches the expected result "${this.randomCity}"!`,
+      `Fail! The field "CityName" don't matches the expected result "${this.randomCity}"!`,
+    )
   }
 }

@@ -9,7 +9,7 @@ export class WebHelper {
     });
   }
 
-    public static getSumDate(date: string, days: number): string {
+  public static getSumDate(date: string, days: number): string {
     const dateObject = new Date(date);
     dateObject.setDate(dateObject.getDate() + days);
     return dateObject.toLocaleDateString("en-US", {
@@ -17,5 +17,15 @@ export class WebHelper {
       day: "numeric",
       year: "numeric",
     });
+  }
+
+  public static assert(
+    condition: boolean,
+    successMessage: string = "Assertion Success!",
+    failMessage: string = "Assertion Error!"
+  ) {
+    condition == true 
+      ? console.log(successMessage)
+      : console.log(failMessage);
   }
 }

@@ -12,13 +12,14 @@ export const SUPPORTED_ACTIVITY_NAMES = [
 ] as const;
 
 
-export class CityActivities {
-    private readonly cityActivities: CityActivity[];
+export class ActivityManager {
 
-    public constructor(cityActivities: CityActivity | CityActivity[]) {
-        this.cityActivities = Array.isArray(cityActivities)
-            ? [...cityActivities]
-            : [cityActivities];
+    
+
+    public cityActivities: CityActivity[];
+
+    public setCityActivities(cityActivity: CityActivity[]){
+        this.cityActivities = cityActivity;
     }
 
     public getAllCityActivities(): CityActivity[] {
@@ -491,4 +492,5 @@ export class CityActivities {
             millisecondsPerDay
         );
     }
+
 }

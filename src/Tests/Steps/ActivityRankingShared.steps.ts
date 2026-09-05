@@ -1,7 +1,7 @@
 import { world as cucumberWorld } from "@cucumber/cucumber";
 import assert from "node:assert/strict";
 import { MockCityActivitiesFactory } from "../../fixtures/MockCityActivitiesFactory";
-import { CityActivities } from "../../PageObjects/CityActivities";
+import { ActivityManager } from "../../PageObjects/CityActivities";
 import { CucumberWorld } from "../../Support/CucumberWorld";
 import type { CityActivity, CityNotFoundError } from "../../Types";
 
@@ -68,8 +68,8 @@ export class ActivityRankingSharedSteps {
     return response;
   }
 
-  public getCityActivities(response: CityActivity | CityActivity[]): CityActivities {
-    return new CityActivities(response);
+  public getCityActivities(response: CityActivity | CityActivity[]): ActivityManager {
+    return new ActivityManager();
   }
 
   public getExpectedResponse(): CityActivity {
