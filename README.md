@@ -74,6 +74,11 @@ src/
     ActivityRankingClientFactory.ts
     FixtureActivityRankingClient.ts
     ActivityRankingErrors.ts
+  Mocks/
+    OpenMeteo/
+      OpenMeteoMockServer.ts
+      OpenMeteoFixtures.ts
+      OpenMeteoTypes.ts
   PageObjects/
     CityActivities.ts
 
@@ -192,7 +197,7 @@ The current client assumption is a single `GET /activities` endpoint. Exact and 
 /activities?city=San&limit=2
 ```
 
-The Activity Ranking API is intentionally not implemented in this repository. The SUT client defines the expected HTTP boundary and surfaces connection or HTTP errors when the API is unavailable. Fixture and SUT execution use the same feature files, bindings, Steps, and assertions. Open-Meteo remains outside the client and will be mocked at the production API's external dependency boundary later.
+The Activity Ranking API is intentionally not implemented in this repository. The SUT client defines the expected HTTP boundary and surfaces connection or HTTP errors when the API is unavailable. Fixture and SUT execution use the same feature files, bindings, Steps, and assertions. Open-Meteo is represented separately by a standalone upstream dependency mock; it never returns Activity Ranking API responses.
 
 ### Test target configuration
 
@@ -213,9 +218,38 @@ An unset or unsupported test target fails fast with a configuration error. SUT f
 
 ## Open-Meteo Dependency Strategy
 
-The production feature is expected to obtain weather data from **Open-Meteo**.
+The production feature is expected to obtain weather data from **Open-Meteo**. The test boundary is intentionally arranged as:
 
-The current specification suite does **not** make live calls to the public Open-Meteo service. Controlled fixtures are used instead so that the tests remain:
+```text
+Cucumber Tests
+      ↓
+ActivityRankingApiClient
+      ↓
+Activity Ranking API (not implemented)
+      ↓
+Open-Meteo Mock Server
+```
+
+The standalone mock implements only the upstream dependency routes needed by a future Activity Ranking API:
+
+- `GET /v1/search` — deterministic exact, partial, ambiguous, limited, and empty geocoding results.
+- `GET /v1/forecast` — seven sequential dates and deterministic temperature, precipitation, snowfall, wind, and weather-code inputs.
+
+It contains no activity names, suitability values, ranking output, or recommendation reasoning. Start it separately when developing a future SUT integration:
+
+```bash
+npm run mock:open-meteo
+```
+
+The default address is `http://127.0.0.1:4010`. Override it with `OPEN_METEO_MOCK_HOST` and `OPEN_METEO_MOCK_PORT`. A future Activity Ranking API can consume it through `OPEN_METEO_BASE_URL`, or through separate geocoding and forecast base URLs. Those variables belong to the future SUT and are deliberately not read by `ActivityRankingApiClient`.
+
+The mock is verified independently with:
+
+```bash
+npm run test:open-meteo-mock
+```
+
+The current specification suite does **not** make live calls to the public Open-Meteo service or automatically start the mock. Controlled fixtures remain available so that the BDD tests stay:
 
 - Deterministic.
 - Fast.
@@ -225,7 +259,7 @@ The current specification suite does **not** make live calls to the public Open-
 
 The suite includes deterministic examples such as high snowfall producing a high Skiing score and clear conditions producing a higher Outdoor Sightseeing score.
 
-When an Activity Ranking API implementation exists, the preferred approach is to send real requests to that API while mocking or stubbing **Open-Meteo at the external dependency boundary**. A smaller integration suite can separately verify compatibility with the real Open-Meteo service.
+When an Activity Ranking API implementation exists, it can be started against this mock and then exercised through `ActivityRankingApiClient`. This keeps deterministic weather inputs at the external dependency boundary while preserving meaningful SUT failures when the Activity Ranking API itself is absent. Live Open-Meteo availability must not determine normal BDD suite reliability.
 
 ## Mocking Strategy
 
@@ -256,7 +290,7 @@ npm ci
 
 ### Validate the repository
 
-Run the TypeScript typecheck, ESLint, and all Cucumber scenarios:
+Run the TypeScript typecheck, ESLint, Open-Meteo mock verification, and all fixture-backed Cucumber scenarios:
 
 ```bash
 npm run validate
