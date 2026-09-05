@@ -76,12 +76,11 @@ e2e-tests/
 
 src/
   Api/
-    ActivityRankingClient.ts
     ActivityRankingApiClient.ts
-    ActivityRankingClientFactory.ts
+  Types/
+    index.ts
+  fixtures/
     FixtureActivityRankingClient.ts
-    ActivityRankingErrors.ts
-    ActivityRankingHttpAssertions.ts
   Mocks/
     OpenMeteo/
       OpenMeteoMockServer.ts

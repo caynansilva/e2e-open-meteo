@@ -1,6 +1,5 @@
 import { BaseClass } from "src/BaseClass";
 import type { CityNotFoundError } from "src/Types";
-import { ActivityRankingApiError } from "src/Api/ActivityRankingErrors";
 import {
   CucumberWorld,
   WORLD_DATA_KEYS
@@ -23,8 +22,8 @@ export class Sc021ValidateInvalidCityErrorSteps extends BaseClass {
     try {
       await this.activityRankingClient.getActivityRanking(invalidCityName);
     } catch (error: unknown) {
-      if (error instanceof ActivityRankingApiError) {
-        world.setData(WORLD_DATA_KEYS.errorResponse, error.responseBody);
+      if (error instanceof Error && error.cause !== undefined) {
+        world.setData(WORLD_DATA_KEYS.errorResponse, error.cause);
         return;
       }
 

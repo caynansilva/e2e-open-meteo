@@ -1,24 +1,14 @@
-import type { CityActivity } from "../Types";
-import type { ActivityRankingClient } from "./ActivityRankingClient";
-import {
-    ActivityRankingApiError,
-    ActivityRankingTransportError
-} from "./ActivityRankingErrors";
+import type {
+    ActivityRankingClient,
+    ActivityRankingErrorBody,
+    ActivityRankingHttpResponse,
+    ActivityRankingQuery,
+    CityActivity
+} from "../Types";
+import { FixtureActivityRankingClient } from "../fixtures/FixtureActivityRankingClient";
 
 const DEFAULT_BASE_URL = "http://localhost:3000";
-
-export type ActivityRankingQuery = Record<
-    string,
-    string | number | undefined
->;
-
-export interface ActivityRankingHttpResponse<T = unknown> {
-    status: number;
-    statusText: string;
-    headers: Headers;
-    body: T | string | null;
-    url: string;
-}
+const TARGET_ENVIRONMENT_VARIABLE = "ACTIVITY_RANKING_TEST_TARGET";
 
 export class ActivityRankingApiClient implements ActivityRankingClient {
     public readonly baseUrl: string;
@@ -28,6 +18,37 @@ export class ActivityRankingApiClient implements ActivityRankingClient {
             DEFAULT_BASE_URL
     ) {
         this.baseUrl = baseUrl.replace(/\/+$/, "");
+    }
+
+    public static create(): ActivityRankingClient {
+        const target = process.env[TARGET_ENVIRONMENT_VARIABLE];
+
+        if (target === "fixture") {
+            return new FixtureActivityRankingClient();
+        }
+
+        if (target === "sut") {
+            return new ActivityRankingApiClient();
+        }
+
+        const receivedTarget = target ?? "<unset>";
+
+        throw new Error(
+            `${TARGET_ENVIRONMENT_VARIABLE} must be set to "fixture" or "sut". ` +
+            `Received: ${receivedTarget}.`
+        );
+    }
+
+    public async isApiEndpointAvailable(): Promise<boolean> {
+        try {
+            const response = await fetch(this.baseUrl, {
+                method: "GET"
+            });
+
+            return response.ok;
+        } catch {
+            return false;
+        }
     }
 
     public async getActivityRanking(city: string): Promise<CityActivity> {
@@ -51,17 +72,7 @@ export class ActivityRankingApiClient implements ActivityRankingClient {
     ): Promise<ActivityRankingHttpResponse> {
         const requestUrl = this.createRequestUrl(path, query);
         const normalizedMethod = method.toUpperCase();
-        let response: Response;
-
-        try {
-            response = await fetch(requestUrl, { method: normalizedMethod });
-        } catch (error: unknown) {
-            throw new ActivityRankingTransportError(
-                requestUrl.href,
-                error,
-                normalizedMethod
-            );
-        }
+        const response = await fetch(requestUrl, { method: normalizedMethod });
 
         return {
             status: response.status,
@@ -70,6 +81,46 @@ export class ActivityRankingApiClient implements ActivityRankingClient {
             body: await this.getResponseBody(response),
             url: requestUrl.href
         };
+    }
+
+    public assertStatusCode(
+        response: ActivityRankingHttpResponse,
+        expectedStatus: number
+    ): boolean {
+        return response.status === expectedStatus;
+    }
+
+    public assertJsonContentType(
+        response: ActivityRankingHttpResponse
+    ): boolean {
+        return response.headers
+            .get("content-type")
+            ?.toLowerCase()
+            .includes("application/json") ?? false;
+    }
+
+    public assertClientErrorResponse(
+        response: ActivityRankingHttpResponse
+    ): boolean {
+        return this.getErrorText(response.body).length > 0;
+    }
+
+    public assertMethodNotAllowedResponse(
+        response: ActivityRankingHttpResponse
+    ): boolean {
+        const errorText = this.getErrorText(response.body).toLowerCase();
+
+        return errorText.includes("method") &&
+            errorText.includes("not allowed");
+    }
+
+    public assertEndpointNotFoundResponse(
+        response: ActivityRankingHttpResponse
+    ): boolean {
+        const errorText = this.getErrorText(response.body).toLowerCase();
+
+        return (errorText.includes("endpoint") || errorText.includes("route")) &&
+            errorText.includes("not found");
     }
 
     private createRequestUrl(
@@ -95,13 +146,21 @@ export class ActivityRankingApiClient implements ActivityRankingClient {
         const response = await this.sendRequest(method, path, query);
 
         if (response.status < 200 || response.status >= 300) {
-            throw new ActivityRankingApiError({
-                status: response.status,
-                statusText: response.statusText,
-                requestUrl: response.url,
-                responseBody: response.body,
-                method
-            });
+            const statusDetail = `${response.status} ${response.statusText}`.trim();
+            const responseBody = response.body === undefined
+                ? ""
+                : `: ${typeof response.body === "string"
+                    ? response.body
+                    : JSON.stringify(response.body)}`;
+
+            throw new Error(
+                this.createFailureMessage(
+                    response.url,
+                    `${statusDetail}${responseBody}`,
+                    method
+                ),
+                { cause: response.body }
+            );
         }
 
         if (typeof response.body === "string") {
@@ -118,9 +177,10 @@ export class ActivityRankingApiClient implements ActivityRankingClient {
 
     private createFailureMessage(
         requestUrl: string,
-        detail: string
+        detail: string,
+        method = "GET"
     ): string {
-        return `Activity Ranking API request failed: GET ${requestUrl} ${detail}`;
+        return `Activity Ranking API request failed: ${method.toUpperCase()} ${requestUrl} ${detail}`;
     }
 
     private async getResponseBody(response: Response): Promise<unknown | null> {
@@ -139,5 +199,21 @@ export class ActivityRankingApiClient implements ActivityRankingClient {
         } catch {
             return null;
         }
+    }
+
+    private getErrorText(body: unknown): string {
+        if (typeof body === "string") {
+            return body.trim();
+        }
+
+        if (this.isErrorObject(body)) {
+            return body.error ?? body.message ?? "";
+        }
+
+        return "";
+    }
+
+    private isErrorObject(body: unknown): body is ActivityRankingErrorBody {
+        return typeof body === "object" && body !== null;
     }
 }

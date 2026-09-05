@@ -509,8 +509,8 @@ export class ActivityManager {
         });
     }
 
-    private normalizeText(value: string): string {
-        return value.trim().toLowerCase();
+    private normalizeText(value: string | null | undefined): string {
+        return value?.trim().toLowerCase() ?? "";
     }
 
     private hasExpectedWeatherSensitiveActivityScore(

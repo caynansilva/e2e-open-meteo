@@ -1,9 +1,9 @@
 import {
     CucumberWorld
 } from "../../Support/CucumberWorld";
-import { Sc06ApiContractSharedSteps } from "./SC-06-API_Contract_Shared.steps";
+import { APIScenarariosSharedSteps } from "./APIScenarariosSharedSteps.steps";
 
-export class Sc066ValidateUnsupportedHttpMethodSteps extends Sc06ApiContractSharedSteps {
+export class Sc066ValidateUnsupportedHttpMethodSteps extends APIScenarariosSharedSteps {
     public async THE_CLIENT_SENDS_A_POST_REQUEST_TO_THE_ACTIVITIES_ENDPOINT(
         world: CucumberWorld
     ): Promise<void> {
@@ -16,7 +16,7 @@ export class Sc066ValidateUnsupportedHttpMethodSteps extends Sc06ApiContractShar
         const response = this.getHttpResponse(world);
 
         this.assert(
-            this.httpAssertions.assertMethodNotAllowedResponse(response),
+            this.apiClient.assertMethodNotAllowedResponse(response),
             "Success! The response indicates that the HTTP method is not allowed!",
             "Fail! The response does not indicate that the HTTP method is not allowed!"
         );

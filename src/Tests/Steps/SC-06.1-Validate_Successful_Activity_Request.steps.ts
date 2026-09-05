@@ -1,9 +1,9 @@
 import {
     CucumberWorld
 } from "../../Support/CucumberWorld";
-import { Sc06ApiContractSharedSteps } from "./SC-06-API_Contract_Shared.steps";
+import { APIScenarariosSharedSteps } from "./APIScenarariosSharedSteps.steps";
 
-export class Sc061ValidateSuccessfulActivityRequestSteps extends Sc06ApiContractSharedSteps {
+export class Sc061ValidateSuccessfulActivityRequestSteps extends APIScenarariosSharedSteps {
     public async THE_CLIENT_SENDS_A_GET_REQUEST_FOR_ACTIVITIES_USING_A_VALID_CITY(
         world: CucumberWorld
     ): Promise<void> {
@@ -18,7 +18,7 @@ export class Sc061ValidateSuccessfulActivityRequestSteps extends Sc06ApiContract
         const response = this.getHttpResponse(world);
 
         this.assert(
-            this.httpAssertions.assertJsonContentType(response),
+            this.apiClient.assertJsonContentType(response),
             "Success! The response content type is JSON!",
             "Fail! The response content type is not JSON!"
         );

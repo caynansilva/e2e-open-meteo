@@ -1,9 +1,9 @@
 import {
     CucumberWorld
 } from "../../Support/CucumberWorld";
-import { Sc06ApiContractSharedSteps } from "./SC-06-API_Contract_Shared.steps";
+import { APIScenarariosSharedSteps } from "./APIScenarariosSharedSteps.steps";
 
-export class Sc067ValidateUnknownEndpointSteps extends Sc06ApiContractSharedSteps {
+export class Sc067ValidateUnknownEndpointSteps extends APIScenarariosSharedSteps {
     public async THE_CLIENT_SENDS_A_GET_REQUEST_TO_AN_UNSUPPORTED_ENDPOINT(
         world: CucumberWorld
     ): Promise<void> {
@@ -16,7 +16,7 @@ export class Sc067ValidateUnknownEndpointSteps extends Sc06ApiContractSharedStep
         const response = this.getHttpResponse(world);
 
         this.assert(
-            this.httpAssertions.assertEndpointNotFoundResponse(response),
+            this.apiClient.assertEndpointNotFoundResponse(response),
             "Success! The response indicates that the endpoint was not found!",
             "Fail! The response does not indicate that the endpoint was not found!"
         );

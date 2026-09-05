@@ -1,24 +1,24 @@
-import {
-    ActivityRankingApiClient,
-    type ActivityRankingHttpResponse
-} from "../../Api/ActivityRankingApiClient";
-import { ActivityRankingHttpAssertions } from "../../Api/ActivityRankingHttpAssertions";
+import { ActivityRankingApiClient } from "../../Api/ActivityRankingApiClient";
 import { BaseClass } from "../../BaseClass";
 import {
     CucumberWorld,
     WORLD_DATA_KEYS
 } from "../../Support/CucumberWorld";
-import type { CityNotFoundError } from "../../Types";
+import type {
+    ActivityRankingHttpResponse,
+    ActivityRankingQuery,
+    CityNotFoundError
+} from "../../Types";
 
-export class Sc06ApiContractSharedSteps extends BaseClass {
+export class APIScenarariosSharedSteps extends BaseClass {
     protected readonly apiClient = new ActivityRankingApiClient();
-    protected readonly httpAssertions = new ActivityRankingHttpAssertions();
 
-    public THE_ACTIVITY_RANKING_API_ENDPOINT_IS_AVAILABLE(
+    public async THE_ACTIVITY_RANKING_API_ENDPOINT_IS_AVAILABLE(
         _world: CucumberWorld
-    ): void {
+    ): Promise<void> {
+        const isAvailable: boolean = await this.apiClient.isApiEndpointAvailable();
         this.assert(
-            this.apiClient.baseUrl.length > 0,
+            isAvailable,
             "Success! The Activity Ranking API base URL is configured!",
             "Fail! The Activity Ranking API base URL is not configured!"
         );
@@ -37,7 +37,7 @@ export class Sc06ApiContractSharedSteps extends BaseClass {
         const response = this.getHttpResponse(world);
 
         this.assert(
-            this.httpAssertions.assertStatusCode(response, expectedStatus),
+            this.apiClient.assertStatusCode(response, expectedStatus),
             `Success! The response status is ${expectedStatus}!`,
             `Fail! Expected response status ${expectedStatus}, received ${response.status}!`
         );
@@ -49,7 +49,7 @@ export class Sc06ApiContractSharedSteps extends BaseClass {
         const response = this.getHttpResponse(world);
 
         this.assert(
-            this.httpAssertions.assertClientErrorResponse(response),
+            this.apiClient.assertClientErrorResponse(response),
             "Success! The response contains a clear client error!",
             "Fail! The response does not contain a clear client error!"
         );
@@ -59,7 +59,7 @@ export class Sc06ApiContractSharedSteps extends BaseClass {
         world: CucumberWorld,
         method: string,
         path: string,
-        query?: Record<string, string | number | undefined>
+        query?: ActivityRankingQuery
     ): Promise<void> {
         const response = await this.apiClient.sendRequest(method, path, query);
 

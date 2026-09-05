@@ -2,10 +2,11 @@ import { ActivityManager } from "../PageObjects/CityActivities";
 import {
     cityNames,
     MockCityActivitiesFactory
-} from "../fixtures/MockCityActivitiesFactory";
-import type { CityActivity } from "../Types";
-import type { ActivityRankingClient } from "./ActivityRankingClient";
-import { ActivityRankingApiError } from "./ActivityRankingErrors";
+} from "./MockCityActivitiesFactory";
+import type {
+    ActivityRankingClient,
+    CityActivity
+} from "../Types";
 
 export class FixtureActivityRankingClient implements ActivityRankingClient {
     private readonly mockData: MockCityActivitiesFactory;
@@ -16,12 +17,14 @@ export class FixtureActivityRankingClient implements ActivityRankingClient {
 
     public async getActivityRanking(city: string): Promise<CityActivity> {
         if (this.isInvalidCity(city)) {
-            throw new ActivityRankingApiError({
-                status: 404,
-                statusText: "Not Found",
-                requestUrl: this.createFixtureRequestUrl(city),
-                responseBody: this.mockData.returnCityNotFoundError(city)
-            });
+            const responseBody = this.mockData.returnCityNotFoundError(city);
+            const requestUrl = this.createFixtureRequestUrl(city);
+
+            throw new Error(
+                `Activity Ranking API request failed: GET ${requestUrl} ` +
+                `404 Not Found: ${JSON.stringify(responseBody)}`,
+                { cause: responseBody }
+            );
         }
 
         return this.mockData.returnWeatherSensitiveMockData(city);

@@ -1,9 +1,9 @@
 import {
     CucumberWorld
 } from "../../Support/CucumberWorld";
-import { Sc06ApiContractSharedSteps } from "./SC-06-API_Contract_Shared.steps";
+import { APIScenarariosSharedSteps } from "./APIScenarariosSharedSteps.steps";
 
-export class Sc063ValidateEmptyCityParameterSteps extends Sc06ApiContractSharedSteps {
+export class Sc063ValidateEmptyCityParameterSteps extends APIScenarariosSharedSteps {
     public async THE_CLIENT_SENDS_A_GET_REQUEST_WITH_AN_EMPTY_CITY_PARAMETER(
         world: CucumberWorld
     ): Promise<void> {

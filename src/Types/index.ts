@@ -34,3 +34,30 @@ export type ScoreAndReason = {
 export type CityNotFoundError = {
     error: string;
 };
+
+export interface ActivityRankingClient {
+    getActivityRanking(city: string): Promise<CityActivity>;
+
+    searchCities(
+        partialName: string,
+        limit?: number
+    ): Promise<CityActivity[]>;
+}
+
+export type ActivityRankingQuery = Record<
+    string,
+    string | number | undefined
+>;
+
+export interface ActivityRankingHttpResponse<T = unknown> {
+    status: number;
+    statusText: string;
+    headers: Headers;
+    body: T | string | null;
+    url: string;
+}
+
+export type ActivityRankingErrorBody = {
+    error?: string;
+    message?: string;
+};

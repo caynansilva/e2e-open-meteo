@@ -1,8 +1,8 @@
 import { Given, Then } from "@cucumber/cucumber";
 import type { CucumberWorld } from "../../Support/CucumberWorld";
-import { Sc06ApiContractSharedSteps } from "../Steps/SC-06-API_Contract_Shared.steps";
+import { APIScenarariosSharedSteps } from "../Steps/APIScenarariosSharedSteps.steps";
 
-const steps = new Sc06ApiContractSharedSteps();
+const steps = new APIScenarariosSharedSteps();
 
 Given(
     "the Activity Ranking API endpoint is available",

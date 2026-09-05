@@ -4,6 +4,9 @@ Use this table to scan recent changes and validation status.
 
 | Date | Entry | Area | Validation |
 |------|-------|------|------------|
+| 2026-09-05 | [guard-missing-error-text](./2026-09-05-1144-guard-missing-error-text.md) | Activity Ranking validation | pass |
+| 2026-09-05 | [remove-activity-error-classes](./2026-09-05-1128-remove-activity-error-classes.md) | Activity Ranking error handling | pass / expected SUT red |
+| 2026-09-05 | [consolidate-activity-ranking-api](./2026-09-05-1051-consolidate-activity-ranking-api.md) | Activity Ranking API architecture | pass / expected SUT red |
 | 2026-09-05 | [sc06-http-contract](./2026-09-05-0217-sc06-http-contract.md) | SC-06 HTTP contract coverage | pass / expected SUT red |
 | 2026-09-04 | [isolated-cucumber-suite](./2026-09-04-2339-isolated-cucumber-suite.md) | Bulk Cucumber execution | pass |
 | 2026-09-04 | [activity-recommendation-ranking-tests](./2026-09-04-2332-activity-recommendation-ranking-tests.md) | SC-04 and SC-05 Cucumber scenarios | partial (pre-existing typecheck failure) |
