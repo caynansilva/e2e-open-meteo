@@ -12,11 +12,11 @@ export class Sc012ValidatePartialCitySearchSteps extends BaseClass {
     this.startTestMessage();
   }
 
-  public THE_USER_SENDS_A_REQUEST_WITH_A_VALID_PARTIAL_CITY_NAME(): void {
+  public THE_USER_SENDS_A_REQUEST_WITH_A_VALID_PARTIAL_CITY_NAME_FOR_MATCHING_LOCATIONS(): void {
     this.partialCityName = "New";
   }
 
-  public THE_API_RETURNS_THE_RESPONSE(): void {
+  public THE_API_RETURNS_THE_MATCHING_PARTIAL_CITY_RESPONSE(): void {
     this.actMgr.setCityActivities(
       this.mockData.getNamedCityActivities(cityNames)
     );

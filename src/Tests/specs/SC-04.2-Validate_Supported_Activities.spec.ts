@@ -4,12 +4,12 @@ import { Sc042ValidateSupportedActivitiesSteps } from "../Steps/SC-04.2-Validate
 
 const steps = new Sc042ValidateSupportedActivitiesSteps();
 
-Given("the user requests the forecast activity rankings for a valid city", () =>
-    steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_A_VALID_CITY()
+Given("the user requests the forecast activity rankings for a valid city for supported activity validation", () =>
+    steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_SUPPORTED_ACTIVITIES_VALIDATION()
 );
 
-When("the API returns the response", () =>
-    steps.THE_API_RETURNS_THE_RESPONSE()
+When("the API returns the supported activities response", () =>
+    steps.THE_API_RETURNS_THE_SUPPORTED_ACTIVITIES_RESPONSE()
 );
 
 Then("validate that every forecast day contains all supported activities", () =>

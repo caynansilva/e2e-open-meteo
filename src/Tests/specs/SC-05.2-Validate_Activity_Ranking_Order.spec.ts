@@ -4,12 +4,12 @@ import { Sc052ValidateActivityRankingOrderSteps } from "../Steps/SC-05.2-Validat
 
 const steps = new Sc052ValidateActivityRankingOrderSteps();
 
-Given("the user requests the forecast activity rankings for a valid city", () =>
-    steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_A_VALID_CITY()
+Given("the user requests the forecast activity rankings for a valid city for ranking order validation", () =>
+    steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_RANKING_ORDER_VALIDATION()
 );
 
-When("the API returns the response", () =>
-    steps.THE_API_RETURNS_THE_RESPONSE()
+When("the API returns the ordered rankings response", () =>
+    steps.THE_API_RETURNS_THE_ORDERED_RANKINGS_RESPONSE()
 );
 
 Then("validate that the activities for each forecast day are ordered from highest to lowest suitability", () =>

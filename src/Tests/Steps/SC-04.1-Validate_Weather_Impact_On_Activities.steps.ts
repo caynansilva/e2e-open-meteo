@@ -9,11 +9,11 @@ export class Sc041ValidateWeatherImpactOnActivitiesSteps extends BaseClass {
     this.startTestMessage();
   }
 
-  public THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_A_VALID_CITY(): void {
+  public THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_WEATHER_IMPACT_VALIDATION(): void {
     this.requestedCityName = "London";
   }
 
-  public THE_API_RETURNS_THE_RESPONSE(): void {
+  public THE_API_RETURNS_THE_WEATHER_SENSITIVE_RANKINGS_RESPONSE(): void {
     this.activityObject = this.mockData.returnWeatherSensitiveMockData(
       this.requestedCityName
     );

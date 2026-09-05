@@ -12,11 +12,11 @@ export class Sc013ValidateAmbiguousCitySearchSteps extends BaseClass {
     this.startTestMessage();
   }
 
-  public THE_USER_SENDS_A_REQUEST_WITH_A_VALID_PARTIAL_CITY_NAME_THAT_MATCHES_MULTIPLE_LOCATIONS(): void {
+  public THE_USER_SENDS_A_REQUEST_WITH_A_VALID_PARTIAL_CITY_NAME_FOR_AMBIGUOUS_MATCHES(): void {
     this.partialCityName = "San";
   }
 
-  public THE_API_RETURNS_THE_RESPONSE(): void {
+  public THE_API_RETURNS_THE_AMBIGUOUS_PARTIAL_CITY_RESPONSE(): void {
     this.actMgr.setCityActivities(
       this.mockData.getNamedCityActivities(cityNames)
     );

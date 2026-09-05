@@ -4,12 +4,12 @@ import { Sc031ValidateSevenForecastDaysSteps } from "../Steps/SC-03.1-Validate_S
 
 const steps = new Sc031ValidateSevenForecastDaysSteps();
 
-Given("the user sends a request for a valid city", () =>
-    steps.THE_USER_SENDS_A_REQUEST_FOR_A_VALID_CITY()
+Given("the user sends a request for a valid city for the seven day forecast", () =>
+    steps.THE_USER_SENDS_A_REQUEST_FOR_A_VALID_CITY_FOR_THE_SEVEN_DAY_FORECAST()
 );
 
-When("the API returns the response", () =>
-    steps.THE_API_RETURNS_THE_RESPONSE()
+When("the API returns the seven day forecast response", () =>
+    steps.THE_API_RETURNS_THE_SEVEN_DAY_FORECAST_RESPONSE()
 );
 
 Then("validate that the response contains exactly {int} forecast days", (expectedDays: number) => 

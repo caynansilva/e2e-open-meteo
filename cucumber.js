@@ -4,9 +4,9 @@ const explicitFeaturePath = process.argv
   .slice(2)
   .find((argument) => argument.endsWith(".feature"));
 
-const featureSpec = explicitFeaturePath
-  ? `src/Tests/specs/${path.basename(explicitFeaturePath, ".feature")}.spec.ts`
-  : "src/Tests/specs/**/*.spec.ts";
+const requireSpecs = explicitFeaturePath
+  ? [`src/Tests/specs/${path.basename(explicitFeaturePath, ".feature")}.spec.ts`]
+  : ["src/Tests/specs/**/*.spec.ts"];
 
 module.exports = {
   default: {
@@ -15,7 +15,7 @@ module.exports = {
     require: [
       "src/Support/CucumberWorld.ts",
       "src/Support/hooks.ts",
-      featureSpec
+      ...requireSpecs
     ],
     format: ["progress"],
     publish: false

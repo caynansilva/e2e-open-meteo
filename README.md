@@ -202,13 +202,21 @@ Random values are used when the exact value is not relevant to the scenario. Det
 
 ### Requirements
 
-- Node.js 20 or later.
-- npm.
+- Node.js 20+
+- npm
 
 Install dependencies from the lockfile:
 
 ```bash
 npm ci
+```
+
+### Validate the repository
+
+Run the TypeScript typecheck, ESLint, and all Cucumber scenarios:
+
+```bash
+npm run validate
 ```
 
 ### Run all Cucumber features
@@ -227,7 +235,7 @@ npx cucumber-js e2e-tests/SC-01.1-Validate_Exact_City_Search.feature
 
 ```bash
 npm run typecheck
-npx eslint .
+npm run lint
 ```
 
 ## Latest Cucumber Result

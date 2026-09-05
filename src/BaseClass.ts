@@ -1,9 +1,6 @@
-
 import { MockCityActivitiesFactory } from "src/fixtures/MockCityActivitiesFactory";
-import { CucumberWorld } from "./Support/CucumberWorld";
 import { CityActivity } from "./Types/index";
 import { ActivityManager } from "./PageObjects/CityActivities"
-import { world as cucumberWorld } from "@cucumber/cucumber";
 
 export class BaseClass {
     public testName: string;
@@ -14,10 +11,6 @@ export class BaseClass {
     constructor() {
         this.mockData = new MockCityActivitiesFactory();
         this.actMgr = new ActivityManager();
-    }
-
-    private get world(): CucumberWorld {
-        return cucumberWorld as CucumberWorld;
     }
 
     public logMessage(message: string): void {

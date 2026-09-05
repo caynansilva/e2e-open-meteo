@@ -4,12 +4,12 @@ import { Sc051ValidateActivitySuitabilityScoreSteps } from "../Steps/SC-05.1-Val
 
 const steps = new Sc051ValidateActivitySuitabilityScoreSteps();
 
-Given("the user requests the forecast activity rankings for a valid city", () =>
-    steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_A_VALID_CITY()
+Given("the user requests the forecast activity rankings for a valid city for ranked activity list validation", () =>
+    steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_RANKED_ACTIVITY_LIST_VALIDATION()
 );
 
-When("the API returns the response", () =>
-    steps.THE_API_RETURNS_THE_RESPONSE()
+When("the API returns the ranked activity list response", () =>
+    steps.THE_API_RETURNS_THE_RANKED_ACTIVITY_LIST_RESPONSE()
 );
 
 Then("validate that each forecast day contains a ranked list of activities", () =>

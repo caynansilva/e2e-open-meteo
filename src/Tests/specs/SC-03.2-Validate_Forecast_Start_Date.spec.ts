@@ -4,12 +4,12 @@ import { Sc032ValidateForecastStartDateSteps } from "../Steps/SC-03.2-Validate_F
 
 const steps = new Sc032ValidateForecastStartDateSteps();
 
-Given("the user sends a request for a valid city", () =>
-    steps.THE_USER_SENDS_A_REQUEST_FOR_A_VALID_CITY()
+Given("the user sends a request for a valid city for the forecast start date", () =>
+    steps.THE_USER_SENDS_A_REQUEST_FOR_A_VALID_CITY_FOR_THE_FORECAST_START_DATE()
 );
 
-When("the API returns the response", () =>
-    steps.THE_API_RETURNS_THE_RESPONSE()
+When("the API returns the forecast date response", () =>
+    steps.THE_API_RETURNS_THE_FORECAST_DATE_RESPONSE()
 );
 
 Then("validate that the forecast starts from the next day", () =>

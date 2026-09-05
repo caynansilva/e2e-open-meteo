@@ -1,7 +1,7 @@
 {
   "name": "@caynansilva/e2e-open-meteo",
   "version": "1.0.1",
-  "description": "Reusable Playwright E2E Testing Framework with Page Object Model architecture",
+  "description": "Specification-first BDD test suite for a weather-based Activity Ranking API",
   "scripts": {
     "build": "tsc",
     "test": "cucumber-js",
@@ -10,6 +10,8 @@
     "test:playwright": "playwright test",
     "test:cucumber": "cucumber-js",
     "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "validate": "npm run typecheck && npm run lint && npm run test:all",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
     "g2f": "ts-node tools/GherkinToFunctions/gherkin-to-functions.ts"
@@ -72,7 +74,7 @@
     "@playwright/test": ">=1.40.0"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

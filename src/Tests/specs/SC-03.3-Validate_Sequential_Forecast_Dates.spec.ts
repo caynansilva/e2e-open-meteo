@@ -4,12 +4,12 @@ import { Sc033ValidateSequentialForecastDatesSteps } from "../Steps/SC-03.3-Vali
 
 const steps = new Sc033ValidateSequentialForecastDatesSteps();
 
-Given("the user sends a request for a valid city", () =>
-    steps.THE_USER_SENDS_A_REQUEST_FOR_A_VALID_CITY()
+Given("the user sends a request for a valid city for sequential forecast dates", () =>
+    steps.THE_USER_SENDS_A_REQUEST_FOR_A_VALID_CITY_FOR_SEQUENTIAL_FORECAST_DATES()
 );
 
-When("the API returns the response", () =>
-    steps.THE_API_RETURNS_THE_RESPONSE()
+When("the API returns the sequential forecast response", () =>
+    steps.THE_API_RETURNS_THE_SEQUENTIAL_FORECAST_RESPONSE()
 );
 
 Then("validate that the forecast dates are sequential", () =>

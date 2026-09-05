@@ -4,12 +4,12 @@ import { Sc041ValidateWeatherImpactOnActivitiesSteps } from "../Steps/SC-04.1-Va
 
 const steps = new Sc041ValidateWeatherImpactOnActivitiesSteps();
 
-Given("the user requests the forecast activity rankings for a valid city", () =>
-    steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_A_VALID_CITY()
+Given("the user requests the forecast activity rankings for a valid city for weather impact validation", () =>
+    steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_WEATHER_IMPACT_VALIDATION()
 );
 
-When("the API returns the response", () =>
-    steps.THE_API_RETURNS_THE_RESPONSE()
+When("the API returns the weather sensitive rankings response", () =>
+    steps.THE_API_RETURNS_THE_WEATHER_SENSITIVE_RANKINGS_RESPONSE()
 );
 
 Then("validate that activity suitability is determined based on the weather conditions for each forecast day", () =>

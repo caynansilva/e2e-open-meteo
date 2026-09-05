@@ -4,12 +4,12 @@ import { Sc053ValidateSuitabilityValueRangeSteps } from "../Steps/SC-05.3-Valida
 
 const steps = new Sc053ValidateSuitabilityValueRangeSteps();
 
-Given("the user requests the forecast activity rankings for a valid city", () =>
-    steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_A_VALID_CITY()
+Given("the user requests the forecast activity rankings for a valid city for suitability range validation", () =>
+    steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_SUITABILITY_RANGE_VALIDATION()
 );
 
-When("the API returns the response", () =>
-    steps.THE_API_RETURNS_THE_RESPONSE()
+When("the API returns the suitability range response", () =>
+    steps.THE_API_RETURNS_THE_SUITABILITY_RANGE_RESPONSE()
 );
 
 Then("validate that all activity suitability values are between {int} and {int}", (expectedValue: number, expectedValue2: number) => 

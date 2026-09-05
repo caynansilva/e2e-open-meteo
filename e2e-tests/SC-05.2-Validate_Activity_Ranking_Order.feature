@@ -5,6 +5,6 @@ Feature: [SC-05] - Validate activity ranking
     So that I can confirm the API provides complete and correctly ranked activity recommendations.
 
     Scenario: [SC-05.2] - Activities are ordered from highest to lowest suitability for each forecast day
-        Given the user requests the forecast activity rankings for a valid city
-        When the API returns the response
+        Given the user requests the forecast activity rankings for a valid city for ranking order validation
+        When the API returns the ordered rankings response
         Then validate that the activities for each forecast day are ordered from highest to lowest suitability

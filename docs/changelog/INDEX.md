@@ -27,3 +27,4 @@ Use this table to scan recent changes and validation status.
 | 2026-09-04 | [native-cucumber-support](./2026-09-04-1114-native-cucumber-support.md) | Cucumber UI/API runner | partial (expected API red state) |
 | 2026-09-04 | [native-cucumber-refactor](./2026-09-04-1144-native-cucumber-refactor.md) | Cucumber architecture and generator | partial (expected API red state) |
 | 2026-09-04 | [cucumber-spec-loading](./2026-09-04-1200-cucumber-spec-loading.md) | Cucumber spec loading and Playwright isolation | partial (expected API red state) |
+| 2026-09-05 | [global-cucumber-bindings](./2026-09-05-0035-global-cucumber-bindings.md) | Global Cucumber binding uniqueness | pass |

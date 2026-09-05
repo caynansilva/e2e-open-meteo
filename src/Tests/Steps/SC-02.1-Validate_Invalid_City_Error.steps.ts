@@ -15,7 +15,7 @@ export class Sc021ValidateInvalidCityErrorSteps extends BaseClass {
     this.invalidCityName = "Atlantis";
   }
 
-  public THE_API_RETURNS_THE_RESPONSE(): void {
+  public THE_API_RETURNS_THE_CITY_NOT_FOUND_ERROR(): void {
     this.errorResponse = this.mockData.returnCityNotFoundError(
       this.invalidCityName
     );

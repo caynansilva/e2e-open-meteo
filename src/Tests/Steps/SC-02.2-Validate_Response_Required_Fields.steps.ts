@@ -9,11 +9,11 @@ export class Sc022ValidateResponseRequiredFieldsSteps extends BaseClass {
     this.startTestMessage();
   }
 
-  public THE_USER_SENDS_A_REQUEST_WITH_A_VALID_AND_UNIQUE_CITY_NAME(): void {
+  public THE_USER_SENDS_A_REQUEST_WITH_A_VALID_AND_UNIQUE_CITY_NAME_FOR_RESPONSE_CONTRACT_VALIDATION(): void {
     this.requestedCityName = "London";
   }
 
-  public THE_API_RETURNS_THE_RESPONSE(): void {
+  public THE_API_RETURNS_THE_CONTRACT_RESPONSE(): void {
     this.activityObject = this.mockData.returnWeatherSensitiveMockData(
       this.requestedCityName
     );

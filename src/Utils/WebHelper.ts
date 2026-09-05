@@ -24,8 +24,11 @@ export class WebHelper {
     successMessage: string = "Assertion Success!",
     failMessage: string = "Assertion Error!"
   ) {
-    condition == true 
-      ? console.log(successMessage)
-      : console.log(failMessage);
+    if (condition) {
+      console.log(successMessage);
+      return;
+    }
+
+    console.log(failMessage);
   }
 }

@@ -9,11 +9,11 @@ export class Sc053ValidateSuitabilityValueRangeSteps extends BaseClass {
     this.startTestMessage();
   }
 
-  public THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_A_VALID_CITY(): void {
+  public THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_SUITABILITY_RANGE_VALIDATION(): void {
     this.requestedCityName = "London";
   }
 
-  public THE_API_RETURNS_THE_RESPONSE(): void {
+  public THE_API_RETURNS_THE_SUITABILITY_RANGE_RESPONSE(): void {
     this.activityObject = this.mockData.returnWeatherSensitiveMockData(
       this.requestedCityName
     );

@@ -4,12 +4,12 @@ import { Sc012ValidatePartialCitySearchSteps } from "../Steps/SC-01.2-Validate_P
 
 const steps = new Sc012ValidatePartialCitySearchSteps();
 
-Given("the user sends a request with a valid partial city name", () =>
-    steps.THE_USER_SENDS_A_REQUEST_WITH_A_VALID_PARTIAL_CITY_NAME()
+Given("the user sends a request with a valid partial city name for matching locations", () =>
+    steps.THE_USER_SENDS_A_REQUEST_WITH_A_VALID_PARTIAL_CITY_NAME_FOR_MATCHING_LOCATIONS()
 );
 
-When("the API returns the response", () =>
-    steps.THE_API_RETURNS_THE_RESPONSE()
+When("the API returns the matching partial city response", () =>
+    steps.THE_API_RETURNS_THE_MATCHING_PARTIAL_CITY_RESPONSE()
 );
 
 Then("validate that the response contains results matching the provided partial city name", () =>

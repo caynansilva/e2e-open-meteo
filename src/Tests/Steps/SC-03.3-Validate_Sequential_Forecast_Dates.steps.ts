@@ -9,11 +9,11 @@ export class Sc033ValidateSequentialForecastDatesSteps extends BaseClass {
     this.startTestMessage();
   }
 
-  public THE_USER_SENDS_A_REQUEST_FOR_A_VALID_CITY(): void {
+  public THE_USER_SENDS_A_REQUEST_FOR_A_VALID_CITY_FOR_SEQUENTIAL_FORECAST_DATES(): void {
     this.requestedCityName = "London";
   }
 
-  public THE_API_RETURNS_THE_RESPONSE(): void {
+  public THE_API_RETURNS_THE_SEQUENTIAL_FORECAST_RESPONSE(): void {
     this.activityObject = this.mockData.returnWeatherSensitiveMockData(
       this.requestedCityName
     );

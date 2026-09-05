@@ -4,12 +4,12 @@ import { Sc043ValidateActivityReasoningSteps } from "../Steps/SC-04.3-Validate_A
 
 const steps = new Sc043ValidateActivityReasoningSteps();
 
-Given("the user requests the forecast activity rankings for a valid city", () =>
-    steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_A_VALID_CITY()
+Given("the user requests the forecast activity rankings for a valid city for activity reasoning validation", () =>
+    steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_ACTIVITY_REASONING_VALIDATION()
 );
 
-When("the API returns the response", () =>
-    steps.THE_API_RETURNS_THE_RESPONSE()
+When("the API returns the activity reasoning response", () =>
+    steps.THE_API_RETURNS_THE_ACTIVITY_REASONING_RESPONSE()
 );
 
 Then("validate that every activity includes reasoning explaining its suitability", () =>

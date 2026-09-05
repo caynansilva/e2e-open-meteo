@@ -6,5 +6,5 @@ Feature: [SC-02] - Validate the API response contract
 
     Scenario: [SC-02.1] - Return an appropriate error when the city does not exist
         Given the user sends a request with an invalid city name
-        When the API returns the response
+        When the API returns the city not found error
         Then validate that a clear error response indicates that the city could not be found
