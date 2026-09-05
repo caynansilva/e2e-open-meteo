@@ -7,8 +7,20 @@ import {
 
 const DEFAULT_BASE_URL = "http://localhost:3000";
 
+export type ActivityRankingQuery = Record<
+    string,
+    string | number | undefined
+>;
+
+export interface ActivityRankingHttpResponse<T = unknown> {
+    status: number;
+    statusText: string;
+    headers: Headers;
+    body: T | string | null;
+    url: string;
+}
+
 export class ActivityRankingApiClient implements ActivityRankingClient {
-    private readonly activityRankingPath = "/activities";
     public readonly baseUrl: string;
 
     constructor(
@@ -19,60 +31,89 @@ export class ActivityRankingApiClient implements ActivityRankingClient {
     }
 
     public async getActivityRanking(city: string): Promise<CityActivity> {
-        const requestUrl = this.createRequestUrl(city);
-
-        return this.request<CityActivity>(requestUrl);
+        return this.request<CityActivity>("GET", "/activities", { city });
     }
 
     public async searchCities(
         partialName: string,
         limit?: number
     ): Promise<CityActivity[]> {
-        const requestUrl = this.createRequestUrl(partialName, limit);
-
-        return this.request<CityActivity[]>(requestUrl);
+        return this.request<CityActivity[]>("GET", "/activities", {
+            city: partialName,
+            limit
+        });
     }
 
-    private createRequestUrl(city: string, limit?: number): URL {
-        const requestUrl = new URL(this.activityRankingPath, this.baseUrl);
+    public async sendRequest(
+        method: string,
+        path: string,
+        query?: ActivityRankingQuery
+    ): Promise<ActivityRankingHttpResponse> {
+        const requestUrl = this.createRequestUrl(path, query);
+        const normalizedMethod = method.toUpperCase();
+        let response: Response;
 
-        requestUrl.searchParams.set("city", city);
+        try {
+            response = await fetch(requestUrl, { method: normalizedMethod });
+        } catch (error: unknown) {
+            throw new ActivityRankingTransportError(
+                requestUrl.href,
+                error,
+                normalizedMethod
+            );
+        }
 
-        if (limit !== undefined) {
-            requestUrl.searchParams.set("limit", String(limit));
+        return {
+            status: response.status,
+            statusText: response.statusText,
+            headers: response.headers,
+            body: await this.getResponseBody(response),
+            url: requestUrl.href
+        };
+    }
+
+    private createRequestUrl(
+        path: string,
+        query?: ActivityRankingQuery
+    ): URL {
+        const requestUrl = new URL(path, this.baseUrl);
+
+        for (const [key, value] of Object.entries(query ?? {})) {
+            if (value !== undefined) {
+                requestUrl.searchParams.set(key, String(value));
+            }
         }
 
         return requestUrl;
     }
 
-    private async request<T>(requestUrl: URL): Promise<T> {
-        let response: Response;
+    private async request<T>(
+        method: string,
+        path: string,
+        query?: ActivityRankingQuery
+    ): Promise<T> {
+        const response = await this.sendRequest(method, path, query);
 
-        try {
-            response = await fetch(requestUrl, { method: "GET" });
-        } catch (error: unknown) {
-            throw new ActivityRankingTransportError(requestUrl.href, error);
-        }
-
-        if (!response.ok) {
+        if (response.status < 200 || response.status >= 300) {
             throw new ActivityRankingApiError({
                 status: response.status,
                 statusText: response.statusText,
-                requestUrl: requestUrl.href,
-                responseBody: await this.getResponseBody(response)
+                requestUrl: response.url,
+                responseBody: response.body,
+                method
             });
         }
 
-        try {
-            return (await response.json()) as T;
-        } catch (error: unknown) {
+        if (typeof response.body === "string") {
             throw new Error(
                 this.createFailureMessage(
-                    requestUrl.href,
-                    `invalid JSON response: ${this.getErrorMessage(error)}`
+                    response.url,
+                    "invalid JSON response: response body was not JSON"
                 )
             );
         }
+
+        return response.body as T;
     }
 
     private createFailureMessage(
@@ -82,12 +123,12 @@ export class ActivityRankingApiClient implements ActivityRankingClient {
         return `Activity Ranking API request failed: GET ${requestUrl} ${detail}`;
     }
 
-    private async getResponseBody(response: Response): Promise<unknown> {
+    private async getResponseBody(response: Response): Promise<unknown | null> {
         try {
             const responseBody = (await response.text()).trim();
 
             if (!responseBody) {
-                return undefined;
+                return null;
             }
 
             try {
@@ -96,11 +137,7 @@ export class ActivityRankingApiClient implements ActivityRankingClient {
                 return responseBody;
             }
         } catch {
-            return undefined;
+            return null;
         }
-    }
-
-    private getErrorMessage(error: unknown): string {
-        return error instanceof Error ? error.message : String(error);
     }
 }

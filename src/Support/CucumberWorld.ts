@@ -9,7 +9,8 @@ export const WORLD_DATA_KEYS = {
   activityResponse: "activityResponse",
   searchResults: "searchResults",
   invalidCityName: "invalidCityName",
-  errorResponse: "errorResponse"
+  errorResponse: "errorResponse",
+  httpResponse: "httpResponse"
 } as const;
 
 export class CucumberWorld extends World {

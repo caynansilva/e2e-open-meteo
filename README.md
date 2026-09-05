@@ -66,6 +66,13 @@ e2e-tests/
   SC-01.2-Validate_Partial_City_Search.feature
   ...
   SC-05.3-Validate_Suitability_Value_Range.feature
+  SC-06.1-Validate_Successful_Activity_Request.feature
+  SC-06.2-Validate_Missing_City_Parameter.feature
+  SC-06.3-Validate_Empty_City_Parameter.feature
+  SC-06.4-Validate_Unknown_City_Response.feature
+  SC-06.5-Validate_Invalid_Result_Limit.feature
+  SC-06.6-Validate_Unsupported_HTTP_Method.feature
+  SC-06.7-Validate_Unknown_Endpoint.feature
 
 src/
   Api/
@@ -74,6 +81,7 @@ src/
     ActivityRankingClientFactory.ts
     FixtureActivityRankingClient.ts
     ActivityRankingErrors.ts
+    ActivityRankingHttpAssertions.ts
   Mocks/
     OpenMeteo/
       OpenMeteoMockServer.ts
@@ -117,7 +125,7 @@ docs/
 
 ## Scenario Coverage
 
-The suite contains **16 BDD scenarios** grouped into five areas.
+The suite contains **23 BDD scenarios** grouped into six areas.
 
 | Group | Coverage |
 | --- | --- |
@@ -126,8 +134,25 @@ The suite contains **16 BDD scenarios** grouped into five areas.
 | SC-03 — Forecast Days | Seven days, starts tomorrow, sequential dates, no duplicates |
 | SC-04 — Activity Recommendations | Weather impact, supported activities, reasoning |
 | SC-05 — Activity Ranking | Suitability score, descending order, accepted range |
+| SC-06 — HTTP Contract | Endpoint, method, query, status, content type, error behaviour |
 
 The scenarios cover both the explicit acceptance criteria and behaviours that are important for a front-end consumer, such as predictable date ordering, complete activity data, bounded suitability values, and useful error responses.
+
+## SC-06 — HTTP Contract Coverage
+
+SC-06 defines the assumed HTTP contract for the future Activity Ranking API. These scenarios are tagged `@api-contract` and `@sut` so they can be run independently with `npm run test:api-contract`.
+
+| Behaviour | Expected status |
+| --- | ---: |
+| Valid GET `/activities` | 200 |
+| Missing city | 400 |
+| Empty city | 400 |
+| Unknown city | 404 |
+| Invalid limit | 400 |
+| Unsupported HTTP method | 405 |
+| Unknown endpoint | 404 |
+
+This is specification-first contract coverage: the statuses, endpoint behavior, and lightweight error messages are assumptions until a production SUT or formal API definition confirms them. SC-06 does not add fixture behavior or a fake API, so it is expected to remain red while the Activity Ranking API is absent.
 
 ## Assumed API Contract
 
@@ -302,7 +327,15 @@ npm run validate
 npm run test:fixture
 ```
 
-Expected: **16 scenarios passing**. This validates the specification implementation deterministically without a production API.
+Expected: **16 scenarios passing**. This validates the SC-01–SC-05 business specifications deterministically without a production API; `@api-contract` scenarios are excluded.
+
+### API contract specification execution
+
+```bash
+npm run test:api-contract
+```
+
+Expected while no Activity Ranking API exists: **RED — Activity Ranking API transport failure**. Once the SUT is available, the seven scenarios validate the assumed endpoint, query, method, status, content type, and error contracts.
 
 ### SUT-backed specification execution
 

@@ -4,6 +4,7 @@ Use this table to scan recent changes and validation status.
 
 | Date | Entry | Area | Validation |
 |------|-------|------|------------|
+| 2026-09-05 | [sc06-http-contract](./2026-09-05-0217-sc06-http-contract.md) | SC-06 HTTP contract coverage | pass / expected SUT red |
 | 2026-09-04 | [isolated-cucumber-suite](./2026-09-04-2339-isolated-cucumber-suite.md) | Bulk Cucumber execution | pass |
 | 2026-09-04 | [activity-recommendation-ranking-tests](./2026-09-04-2332-activity-recommendation-ranking-tests.md) | SC-04 and SC-05 Cucumber scenarios | partial (pre-existing typecheck failure) |
 | 2026-09-04 | [response-forecast-scenarios](./2026-09-04-2326-response-forecast-scenarios.md) | SC-02 and SC-03 Cucumber scenarios | partial (pre-existing typecheck failure) |

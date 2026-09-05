@@ -35,6 +35,7 @@ export type ActivityRankingApiErrorOptions = {
     statusText: string;
     requestUrl: string;
     responseBody?: unknown;
+    method?: string;
 };
 
 export class ActivityRankingApiError extends Error {
@@ -42,11 +43,13 @@ export class ActivityRankingApiError extends Error {
     public readonly statusText: string;
     public readonly requestUrl: string;
     public readonly responseBody: unknown;
+    public readonly method: string;
 
     constructor(options: ActivityRankingApiErrorOptions) {
+        const method = options.method?.toUpperCase() ?? "GET";
         const statusDetail = `${options.status} ${options.statusText}`.trim();
         const message =
-            `Activity Ranking API request failed: GET ${options.requestUrl} ` +
+            `Activity Ranking API request failed: ${method} ${options.requestUrl} ` +
             `${statusDetail}${formatResponseBody(options.responseBody)}`;
 
         super(message);
@@ -55,21 +58,25 @@ export class ActivityRankingApiError extends Error {
         this.statusText = options.statusText;
         this.requestUrl = options.requestUrl;
         this.responseBody = options.responseBody;
+        this.method = method;
         Object.setPrototypeOf(this, new.target.prototype);
     }
 }
 
 export class ActivityRankingTransportError extends Error {
     public readonly requestUrl: string;
+    public readonly method: string;
 
-    constructor(requestUrl: string, cause: unknown) {
+    constructor(requestUrl: string, cause: unknown, method = "GET") {
+        const normalizedMethod = method.toUpperCase();
         super(
-            `Activity Ranking API request failed: GET ${requestUrl} ` +
+            `Activity Ranking API request failed: ${normalizedMethod} ${requestUrl} ` +
             getTransportErrorDetail(cause),
             { cause }
         );
         this.name = "ActivityRankingTransportError";
         this.requestUrl = requestUrl;
+        this.method = normalizedMethod;
         Object.setPrototypeOf(this, new.target.prototype);
     }
 }
