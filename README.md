@@ -1,4 +1,4 @@
-# Wheather Activity Ranking API — SDET Test
+# Weather Activity Ranking API — SDET Test
 
 Specification-first BDD test suite for the **Activity Ranking API – City-Based Weather Forecast Integration** exercise.
 
@@ -51,12 +51,172 @@ ActivityManager reusable validations
 ### Responsibilities
 
 - **Feature files** describe expected behaviour in business-readable Gherkin.
-- **Cucumber specs** register phrases and delegate execution to Steps classes.
-- **Steps classes** prepare scenario data, call the selected client, and coordinate assertions.
-- **ActivityManager** contains reusable domain validations.
+- **Cucumber specs** are intentionally thin binding adapters. They register Gherkin phrases and delegate execution to Steps classes.
+- **Steps classes** aggregate the operations required to create a test behaviour: prepare data, call the selected client, coordinate reusable framework capabilities, and give validations scenario meaning.
+- **Page Objects / domain classes** group reusable capabilities, validation details, and domain-specific logic so the same implementation can be reused by multiple scenarios.
+- **ActivityManager** contains reusable activity-domain validations.
 - **MockCityActivitiesFactory** creates controlled city, forecast, activity, and error responses.
 - **ActivityRankingClient** provides the same async boundary for fixture and SUT execution.
-- **Steps classes** keep scenario state in strongly typed properties; `parallel: 0` keeps execution deterministic.
+- **Steps classes** keep scenario state in strongly typed class properties. The suite does not use a generic `CucumberWorld` data bag or string-based `setData` / `getData` storage.
+
+## Test Architecture and Design Philosophy
+
+The test architecture in this repository follows a pattern I have used and refined across several automation projects during my work as an Automation Engineer.
+
+The main goal is to keep tests readable while preserving clear responsibility boundaries between business behaviour, test orchestration, reusable framework capabilities, and implementation details.
+
+```text
+.feature
+   ↓
+Cucumber binding spec
+   ↓
+Steps class
+   ↓
+Page Object / domain class
+   ↓
+API client / fixture / external dependency
+```
+
+### Gherkin bindings
+
+The Cucumber `*.spec.ts` files are deliberately small.
+
+Their responsibility is only to connect a Gherkin sentence to a Steps method.
+
+For example:
+
+```ts
+Given(
+    "a valid city name is provided",
+    () => steps.GIVEN_THAT_A_VALID_CITY_NAME_IS_PROVIDED()
+);
+```
+
+The uppercase method naming convention is intentional.
+
+A method such as:
+
+```text
+GIVEN_THAT_A_VALID_CITY_NAME_IS_PROVIDED
+WHEN_THE_ACTIVITY_RANKING_IS_REQUESTED
+THEN_THE_RESPONSE_CONTAINS_SEVEN_FORECAST_DAYS
+```
+
+immediately identifies the method as the implementation of a BDD test step.
+
+This makes it easy to move between the `.feature`, binding, and Steps implementation when reading a test or investigating a failure.
+
+The uppercase naming is a project convention rather than a Cucumber requirement. Its purpose is traceability and readability.
+
+### Steps classes as behaviour aggregators
+
+A Steps class represents the behaviour required by a scenario or cohesive group of scenarios.
+
+It does not contain low-level implementation details that belong to a reusable framework component. Instead, it coordinates the operations needed to express the test behaviour.
+
+A Steps class may:
+
+- Prepare or select test data.
+- Store scenario state in strongly typed class properties.
+- Call API clients, fixtures, mocks, or Page Object/domain methods.
+- Combine reusable operations into a business flow.
+- Give assertions scenario-specific meaning and logging.
+
+Conceptually:
+
+```ts
+export class ExactCitySearchSteps extends BaseClass {
+    public requestedCity = "";
+
+    public GIVEN_THAT_A_VALID_CITY_NAME_IS_PROVIDED(): void {
+        this.requestedCity = this.mockData.getRandomCityName();
+    }
+
+    public async WHEN_THE_ACTIVITY_RANKING_IS_REQUESTED(): Promise<void> {
+        this.activityObject =
+            await this.activityRankingClient.getActivityRanking(
+                this.requestedCity
+            );
+    }
+
+    public THEN_THE_REQUESTED_CITY_IS_RETURNED(): void {
+        this.assert(
+            this.actMgr.assertRequestedCity(
+                this.activityObject,
+                this.requestedCity
+            ),
+            "Success! The requested city was returned.",
+            "Fail! The requested city was not returned."
+        );
+    }
+}
+```
+
+Scenario state remains explicit and typed. There is no generic key/value scenario state container hiding which data a test depends on.
+
+### Page Objects and domain classes
+
+Page Objects and domain classes contain the reusable capabilities and implementation details required by the tests.
+
+Although this exercise tests an API rather than a UI, the same separation-of-responsibilities principle applies.
+
+For this repository, classes such as `ActivityManager` group activity-related validation and reusable domain behaviour.
+
+The Steps class should describe **what the scenario is validating**.
+
+The Page Object/domain class should know **how that validation is performed**.
+
+For example:
+
+```ts
+this.assert(
+    this.actMgr.assertCityActivityExists(this.activityObject),
+    'Success! The field "City Name" exists in the contract!',
+    'Fail! The field "City Name" does not exist in the contract!'
+);
+```
+
+This keeps validation logic centralized instead of duplicating it across multiple scenarios.
+
+When another test needs the same capability, it can instantiate or reuse the same class rather than reimplementing the behaviour.
+
+### Why this structure
+
+This separation creates a predictable responsibility chain:
+
+| Layer | Responsibility |
+| --- | --- |
+| `.feature` | Business-readable expected behaviour |
+| Cucumber spec | Map Gherkin phrases to executable methods |
+| Steps class | Aggregate operations that create the scenario behaviour |
+| Page Object / domain class | Reusable commands, validations, and implementation details |
+| Client / fixture / mock | Interaction with the execution boundary or test dependency |
+
+The structure is designed around a few practical goals:
+
+- **Readability** — a test can be understood by following a direct path from Gherkin to implementation.
+- **Single responsibility** — each layer has a clearly defined reason to change.
+- **Reusability** — shared commands and validations stay concentrated in reusable classes.
+- **Low duplication** — scenarios call existing capabilities instead of recreating the same logic.
+- **Maintainability** — failures are easier to locate because orchestration and implementation details are separated.
+- **Scalability** — the same structure remains understandable as the repository gains more scenarios and framework capabilities.
+- **Discoverability** — engineers can quickly identify whether a change belongs to a feature, binding, Steps class, Page Object/domain class, or client.
+
+This approach has been especially useful in larger automation repositories, where duplicated commands and mixed responsibilities quickly make test suites difficult to maintain.
+
+### Framework direction
+
+This architecture also reflects the foundation of a reusable automation framework I am building around the same principles.
+
+The goal is to make automation approachable for Quality Engineers by providing a simple and readable structure where:
+
+- business behaviour is expressed through BDD;
+- test orchestration remains easy to follow;
+- reusable technical capabilities are centralized;
+- engineers do not need to duplicate commands across tests;
+- framework complexity stays behind clear public classes and methods.
+
+The broader objective is to help Quality Engineers move toward Automation Engineering through a structure that is consistent, reusable, easy to learn, and based on single-responsibility design.
 
 ## Project Structure
 
@@ -445,7 +605,6 @@ AI-assisted development was used to help review scenario coverage, generate/refa
 
 - [`docs/SDET-Test.md`](./docs/SDET-Test.md) — original exercise description.
 - [`docs/01-CaynanReasoning-Scenarios.md`](./docs/01-CaynanReasoning-Scenarios.md) — scenario reasoning and early contract considerations.
-- [`docs/cucumber-test-creation.md`](./docs/cucumber-test-creation.md) — Cucumber test creation guidance.
 - [`tools/GherkinToFunctions/README.md`](./tools/GherkinToFunctions/README.md) — generator usage.
 
 ## Author
