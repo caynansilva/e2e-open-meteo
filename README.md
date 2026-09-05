@@ -41,18 +41,21 @@ Native Cucumber Given / When / Then bindings
    ↓
 Feature/domain Steps classes
    ↓
-ActivityManager reusable validations
+ActivityRankingClient abstraction
+   ├─ FixtureActivityRankingClient
+   └─ ActivityRankingApiClient
    ↓
-Controlled test fixtures / future API client
+ActivityManager reusable validations
 ```
 
 ### Responsibilities
 
 - **Feature files** describe expected behaviour in business-readable Gherkin.
 - **Cucumber specs** register phrases and delegate execution to Steps classes.
-- **Steps classes** prepare scenario data and coordinate assertions.
+- **Steps classes** prepare scenario data, call the selected client, and coordinate assertions.
 - **ActivityManager** contains reusable domain validations.
 - **MockCityActivitiesFactory** creates controlled city, forecast, activity, and error responses.
+- **ActivityRankingClient** provides the same async boundary for fixture and SUT execution.
 - **CucumberWorld** provides scenario-scoped state shared between steps.
 
 ## Project Structure
@@ -65,6 +68,12 @@ e2e-tests/
   SC-05.3-Validate_Suitability_Value_Range.feature
 
 src/
+  Api/
+    ActivityRankingClient.ts
+    ActivityRankingApiClient.ts
+    ActivityRankingClientFactory.ts
+    FixtureActivityRankingClient.ts
+    ActivityRankingErrors.ts
   PageObjects/
     CityActivities.ts
 
@@ -183,7 +192,24 @@ The current client assumption is a single `GET /activities` endpoint. Exact and 
 /activities?city=San&limit=2
 ```
 
-The Activity Ranking API is intentionally not implemented in this repository. The client defines the expected HTTP boundary and will surface connection or HTTP errors until a real system under test is available. Open-Meteo remains outside the client and will be mocked at the production API's external dependency boundary later.
+The Activity Ranking API is intentionally not implemented in this repository. The SUT client defines the expected HTTP boundary and surfaces connection or HTTP errors when the API is unavailable. Fixture and SUT execution use the same feature files, bindings, Steps, and assertions. Open-Meteo remains outside the client and will be mocked at the production API's external dependency boundary later.
+
+### Test target configuration
+
+`ACTIVITY_RANKING_TEST_TARGET` is required and must be one of:
+
+```text
+fixture
+sut
+```
+
+`ACTIVITY_RANKING_API_BASE_URL` configures the SUT base URL and defaults to:
+
+```text
+http://localhost:3000
+```
+
+An unset or unsupported test target fails fast with a configuration error. SUT failures are never replaced with fixture data.
 
 ## Open-Meteo Dependency Strategy
 
@@ -236,6 +262,22 @@ Run the TypeScript typecheck, ESLint, and all Cucumber scenarios:
 npm run validate
 ```
 
+### Fixture-backed specification validation
+
+```bash
+npm run test:fixture
+```
+
+Expected: **16 scenarios passing**. This validates the specification implementation deterministically without a production API.
+
+### SUT-backed specification execution
+
+```bash
+npm run test:sut
+```
+
+Expected while no Activity Ranking API exists: **RED — Activity Ranking API connection failure**. This red state is intentional: it proves the same runnable specification reaches the configured HTTP boundary and fails because the expected production system is absent.
+
 ### Run all Cucumber features
 
 ```bash
@@ -245,7 +287,7 @@ npm run test:all
 ### Run one feature
 
 ```bash
-npx cucumber-js e2e-tests/SC-01.1-Validate_Exact_City_Search.feature
+npm run test:fixture -- e2e-tests/SC-01.1-Validate_Exact_City_Search.feature
 ```
 
 ### Static checks
@@ -258,13 +300,13 @@ npm run lint
 ## Latest Cucumber Result
 
 ```text
-16 scenarios passed
-52 steps passed
+Fixture target: 16 scenarios passed
+Fixture target: 52 steps passed
 0 failed scenarios
 All Cucumber features passed
 ```
 
-The current suite therefore validates the BDD specification successfully against the controlled test fixtures.
+The fixture target validates the BDD specification successfully against controlled test fixtures. The default `npm test` command selects the SUT target, so it is expected to be red until the Activity Ranking API is implemented and running.
 
 ## Gherkin-to-Cucumber Generator
 
@@ -303,11 +345,9 @@ The following decisions were necessary because the exercise intentionally provid
 
 This is a specification-first exercise and no system under test was supplied. The repository therefore defines expected behaviour before the production API exists.
 
-### Direct HTTP API scenarios are not implemented yet
+### SUT-backed scenarios are intentionally red until implementation exists
 
-The current scenarios validate the expected contract and domain behaviour using controlled data rather than HTTP requests to a running Activity Ranking API. The `ActivityRankingApiClient` is available for future HTTP-backed Steps, but existing fixture-backed scenarios have not been migrated.
-
-When the API becomes available, the next layer should wire these business scenarios to the existing `ActivityRankingApiClient` and execute them against real HTTP responses.
+The current scenarios can now execute through either controlled fixtures or the existing HTTP client. SUT mode fails when the configured Activity Ranking API is unavailable, which is intentional for this specification-first stage. Network failures propagate, while typed HTTP error responses can be validated by the existing assertions.
 
 ### Open-Meteo is not called directly
 

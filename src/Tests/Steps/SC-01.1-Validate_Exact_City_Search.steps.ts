@@ -14,16 +14,15 @@ export class Sc01ValidateCitySearchAndResolutionSteps extends BaseClass {
     world.setData(WORLD_DATA_KEYS.requestedCity, requestedCity);
   }
 
-  public THE_API_RETURNS_THE_EXACT_CITY_RESPONSE(
+  public async THE_API_RETURNS_THE_EXACT_CITY_RESPONSE(
     world: CucumberWorld
-  ): void {
+  ): Promise<void> {
     const requestedCity = this.getRequiredData<string>(
       world,
       WORLD_DATA_KEYS.requestedCity
     );
-    const activityResponse = this.mockData.returnWeatherSensitiveMockData(
-      requestedCity
-    );
+    const activityResponse =
+      await this.activityRankingClient.getActivityRanking(requestedCity);
 
     world.setData(WORLD_DATA_KEYS.activityResponse, activityResponse);
   }

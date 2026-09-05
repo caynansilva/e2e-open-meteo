@@ -1,5 +1,4 @@
 import { BaseClass } from "src/BaseClass";
-import { cityNames } from "src/fixtures/MockCityActivitiesFactory";
 import type { CityActivity } from "src/Types";
 import {
   CucumberWorld,
@@ -14,9 +13,9 @@ export class Sc014ValidateCitySearchResultLimitSteps extends BaseClass {
     world.setData(WORLD_DATA_KEYS.maximumResults, 2);
   }
 
-  public THE_API_RETURNS_THE_LIMITED_PARTIAL_CITY_RESPONSE(
+  public async THE_API_RETURNS_THE_LIMITED_PARTIAL_CITY_RESPONSE(
     world: CucumberWorld
-  ): void {
+  ): Promise<void> {
     const partialCityName = this.getRequiredData<string>(
       world,
       WORLD_DATA_KEYS.partialCityName
@@ -25,12 +24,7 @@ export class Sc014ValidateCitySearchResultLimitSteps extends BaseClass {
       world,
       WORLD_DATA_KEYS.maximumResults
     );
-    const activityManager = this.createActivityManager();
-
-    activityManager.setCityActivities(
-      this.mockData.getNamedCityActivities(cityNames)
-    );
-    const searchResults = activityManager.getActivitiesByPartialCityName(
+    const searchResults = await this.activityRankingClient.searchCities(
       partialCityName,
       maximumResults
     );

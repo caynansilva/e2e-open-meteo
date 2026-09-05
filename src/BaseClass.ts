@@ -1,9 +1,13 @@
-import { MockCityActivitiesFactory } from "src/fixtures/MockCityActivitiesFactory";
 import { ActivityManager } from "./PageObjects/CityActivities";
 import { CucumberWorld } from "./Support/CucumberWorld";
+import { createActivityRankingClient } from "./Api/ActivityRankingClientFactory";
+import type { ActivityRankingClient } from "./Api/ActivityRankingClient";
+import { MockCityActivitiesFactory } from "./fixtures/MockCityActivitiesFactory";
 
 export class BaseClass {
     public readonly mockData = new MockCityActivitiesFactory();
+    public readonly activityRankingClient: ActivityRankingClient =
+        createActivityRankingClient();
 
     protected createActivityManager(): ActivityManager {
         return new ActivityManager();

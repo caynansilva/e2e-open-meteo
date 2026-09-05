@@ -9,8 +9,8 @@ Given("the user sends a request with a valid and unique city name for exact city
   steps.THE_USER_SENDS_A_REQUEST_WITH_A_VALID_AND_UNIQUE_CITY_NAME_FOR_EXACT_CITY_RESOLUTION(this);
 });
 
-When("the API returns the exact city response", function (this: CucumberWorld) {
-  steps.THE_API_RETURNS_THE_EXACT_CITY_RESPONSE(this);
+When("the API returns the exact city response", async function (this: CucumberWorld) {
+  await steps.THE_API_RETURNS_THE_EXACT_CITY_RESPONSE(this);
 });
 
 Then("validate that the returned city name matches the city provided in the request", function (this: CucumberWorld) {

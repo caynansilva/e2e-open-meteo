@@ -9,8 +9,8 @@ Given("the user sends a request with a valid partial city name for matching loca
   steps.THE_USER_SENDS_A_REQUEST_WITH_A_VALID_PARTIAL_CITY_NAME_FOR_MATCHING_LOCATIONS(this);
 });
 
-When("the API returns the matching partial city response", function (this: CucumberWorld) {
-  steps.THE_API_RETURNS_THE_MATCHING_PARTIAL_CITY_RESPONSE(this);
+When("the API returns the matching partial city response", async function (this: CucumberWorld) {
+  await steps.THE_API_RETURNS_THE_MATCHING_PARTIAL_CITY_RESPONSE(this);
 });
 
 Then("validate that the response contains results matching the provided partial city name", function (this: CucumberWorld) {

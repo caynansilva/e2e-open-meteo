@@ -9,8 +9,8 @@ Given("the user requests the forecast activity rankings for a valid city for sup
   steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_SUPPORTED_ACTIVITIES_VALIDATION(this);
 });
 
-When("the API returns the supported activities response", function (this: CucumberWorld) {
-  steps.THE_API_RETURNS_THE_SUPPORTED_ACTIVITIES_RESPONSE(this);
+When("the API returns the supported activities response", async function (this: CucumberWorld) {
+  await steps.THE_API_RETURNS_THE_SUPPORTED_ACTIVITIES_RESPONSE(this);
 });
 
 Then("validate that every forecast day contains all supported activities", function (this: CucumberWorld) {

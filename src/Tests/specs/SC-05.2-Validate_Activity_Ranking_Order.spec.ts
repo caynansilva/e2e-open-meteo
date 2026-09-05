@@ -9,8 +9,8 @@ Given("the user requests the forecast activity rankings for a valid city for ran
   steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_RANKING_ORDER_VALIDATION(this);
 });
 
-When("the API returns the ordered rankings response", function (this: CucumberWorld) {
-  steps.THE_API_RETURNS_THE_ORDERED_RANKINGS_RESPONSE(this);
+When("the API returns the ordered rankings response", async function (this: CucumberWorld) {
+  await steps.THE_API_RETURNS_THE_ORDERED_RANKINGS_RESPONSE(this);
 });
 
 Then("validate that the activities for each forecast day are ordered from highest to lowest suitability", function (this: CucumberWorld) {

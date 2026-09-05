@@ -9,8 +9,8 @@ Given("the user sends a request with a valid and unique city name for response c
   steps.THE_USER_SENDS_A_REQUEST_WITH_A_VALID_AND_UNIQUE_CITY_NAME_FOR_RESPONSE_CONTRACT_VALIDATION(this);
 });
 
-When("the API returns the contract response", function (this: CucumberWorld) {
-  steps.THE_API_RETURNS_THE_CONTRACT_RESPONSE(this);
+When("the API returns the contract response", async function (this: CucumberWorld) {
+  await steps.THE_API_RETURNS_THE_CONTRACT_RESPONSE(this);
 });
 
 Then("validate that all fields defined by the API contract are present in the response", function (this: CucumberWorld) {

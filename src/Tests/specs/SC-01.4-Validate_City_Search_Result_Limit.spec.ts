@@ -9,8 +9,8 @@ Given("the user sends a request with a valid partial city name for a limited res
   steps.THE_USER_SENDS_A_REQUEST_WITH_A_VALID_PARTIAL_CITY_NAME_FOR_A_LIMITED_RESULT_SET(this);
 });
 
-When("the API returns the limited partial city response", function (this: CucumberWorld) {
-  steps.THE_API_RETURNS_THE_LIMITED_PARTIAL_CITY_RESPONSE(this);
+When("the API returns the limited partial city response", async function (this: CucumberWorld) {
+  await steps.THE_API_RETURNS_THE_LIMITED_PARTIAL_CITY_RESPONSE(this);
 });
 
 Then("validate that matching locations are returned", function (this: CucumberWorld) {

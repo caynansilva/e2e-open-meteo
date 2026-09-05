@@ -9,8 +9,8 @@ Given("the user sends a request for a valid city for the forecast start date", f
   steps.THE_USER_SENDS_A_REQUEST_FOR_A_VALID_CITY_FOR_THE_FORECAST_START_DATE(this);
 });
 
-When("the API returns the forecast date response", function (this: CucumberWorld) {
-  steps.THE_API_RETURNS_THE_FORECAST_DATE_RESPONSE(this);
+When("the API returns the forecast date response", async function (this: CucumberWorld) {
+  await steps.THE_API_RETURNS_THE_FORECAST_DATE_RESPONSE(this);
 });
 
 Then("validate that the forecast starts from the next day", function (this: CucumberWorld) {

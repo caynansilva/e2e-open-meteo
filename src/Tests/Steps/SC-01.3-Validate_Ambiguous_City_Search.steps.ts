@@ -1,5 +1,4 @@
 import { BaseClass } from "src/BaseClass";
-import { cityNames } from "src/fixtures/MockCityActivitiesFactory";
 import type { CityActivity } from "src/Types";
 import {
   CucumberWorld,
@@ -13,19 +12,14 @@ export class Sc013ValidateAmbiguousCitySearchSteps extends BaseClass {
     world.setData(WORLD_DATA_KEYS.partialCityName, "San");
   }
 
-  public THE_API_RETURNS_THE_AMBIGUOUS_PARTIAL_CITY_RESPONSE(
+  public async THE_API_RETURNS_THE_AMBIGUOUS_PARTIAL_CITY_RESPONSE(
     world: CucumberWorld
-  ): void {
+  ): Promise<void> {
     const partialCityName = this.getRequiredData<string>(
       world,
       WORLD_DATA_KEYS.partialCityName
     );
-    const activityManager = this.createActivityManager();
-
-    activityManager.setCityActivities(
-      this.mockData.getNamedCityActivities(cityNames)
-    );
-    const searchResults = activityManager.getActivitiesByPartialCityName(
+    const searchResults = await this.activityRankingClient.searchCities(
       partialCityName
     );
 

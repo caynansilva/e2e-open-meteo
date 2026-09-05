@@ -1,8 +1,13 @@
 import type { CityActivity } from "../Types";
+import type { ActivityRankingClient } from "./ActivityRankingClient";
+import {
+    ActivityRankingApiError,
+    ActivityRankingTransportError
+} from "./ActivityRankingErrors";
 
 const DEFAULT_BASE_URL = "http://localhost:3000";
 
-export class ActivityRankingApiClient {
+export class ActivityRankingApiClient implements ActivityRankingClient {
     private readonly activityRankingPath = "/activities";
     public readonly baseUrl: string;
 
@@ -46,23 +51,16 @@ export class ActivityRankingApiClient {
         try {
             response = await fetch(requestUrl, { method: "GET" });
         } catch (error: unknown) {
-            throw new Error(
-                this.createFailureMessage(
-                    requestUrl,
-                    this.getTransportErrorDetail(error)
-                )
-            );
+            throw new ActivityRankingTransportError(requestUrl.href, error);
         }
 
         if (!response.ok) {
-            const responseDetail = await this.getResponseDetail(response);
-
-            throw new Error(
-                this.createFailureMessage(
-                    requestUrl,
-                    `${response.status} ${response.statusText}${responseDetail}`
-                )
-            );
+            throw new ActivityRankingApiError({
+                status: response.status,
+                statusText: response.statusText,
+                requestUrl: requestUrl.href,
+                responseBody: await this.getResponseBody(response)
+            });
         }
 
         try {
@@ -70,7 +68,7 @@ export class ActivityRankingApiClient {
         } catch (error: unknown) {
             throw new Error(
                 this.createFailureMessage(
-                    requestUrl,
+                    requestUrl.href,
                     `invalid JSON response: ${this.getErrorMessage(error)}`
                 )
             );
@@ -78,36 +76,28 @@ export class ActivityRankingApiClient {
     }
 
     private createFailureMessage(
-        requestUrl: URL,
+        requestUrl: string,
         detail: string
     ): string {
-        return `Activity Ranking API request failed: GET ${requestUrl.href} ${detail}`;
+        return `Activity Ranking API request failed: GET ${requestUrl} ${detail}`;
     }
 
-    private async getResponseDetail(response: Response): Promise<string> {
+    private async getResponseBody(response: Response): Promise<unknown> {
         try {
             const responseBody = (await response.text()).trim();
 
-            return responseBody ? `: ${responseBody}` : "";
-        } catch {
-            return "";
-        }
-    }
-
-    private getTransportErrorDetail(error: unknown): string {
-        if (!(error instanceof Error)) {
-            return String(error);
-        }
-
-        if (error.cause && typeof error.cause === "object") {
-            const causeCode = "code" in error.cause ? error.cause.code : undefined;
-
-            if (typeof causeCode === "string") {
-                return `${causeCode}: ${error.message}`;
+            if (!responseBody) {
+                return undefined;
             }
-        }
 
-        return this.getErrorMessage(error);
+            try {
+                return JSON.parse(responseBody) as unknown;
+            } catch {
+                return responseBody;
+            }
+        } catch {
+            return undefined;
+        }
     }
 
     private getErrorMessage(error: unknown): string {

@@ -12,16 +12,15 @@ export class Sc051ValidateActivitySuitabilityScoreSteps extends BaseClass {
     world.setData(WORLD_DATA_KEYS.requestedCity, "London");
   }
 
-  public THE_API_RETURNS_THE_RANKED_ACTIVITY_LIST_RESPONSE(
+  public async THE_API_RETURNS_THE_RANKED_ACTIVITY_LIST_RESPONSE(
     world: CucumberWorld
-  ): void {
+  ): Promise<void> {
     const requestedCity = this.getRequiredData<string>(
       world,
       WORLD_DATA_KEYS.requestedCity
     );
-    const activityResponse = this.mockData.returnWeatherSensitiveMockData(
-      requestedCity
-    );
+    const activityResponse =
+      await this.activityRankingClient.getActivityRanking(requestedCity);
 
     world.setData(WORLD_DATA_KEYS.activityResponse, activityResponse);
   }

@@ -9,8 +9,8 @@ Given("the user requests the forecast activity rankings for a valid city for sui
   steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_SUITABILITY_RANGE_VALIDATION(this);
 });
 
-When("the API returns the suitability range response", function (this: CucumberWorld) {
-  steps.THE_API_RETURNS_THE_SUITABILITY_RANGE_RESPONSE(this);
+When("the API returns the suitability range response", async function (this: CucumberWorld) {
+  await steps.THE_API_RETURNS_THE_SUITABILITY_RANGE_RESPONSE(this);
 });
 
 Then("validate that all activity suitability values are between {int} and {int}", function (this: CucumberWorld, expectedMinimum: number, expectedMaximum: number) {

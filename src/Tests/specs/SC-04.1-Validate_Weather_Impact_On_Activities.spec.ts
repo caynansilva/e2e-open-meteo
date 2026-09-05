@@ -9,8 +9,8 @@ Given("the user requests the forecast activity rankings for a valid city for wea
   steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_WEATHER_IMPACT_VALIDATION(this);
 });
 
-When("the API returns the weather sensitive rankings response", function (this: CucumberWorld) {
-  steps.THE_API_RETURNS_THE_WEATHER_SENSITIVE_RANKINGS_RESPONSE(this);
+When("the API returns the weather sensitive rankings response", async function (this: CucumberWorld) {
+  await steps.THE_API_RETURNS_THE_WEATHER_SENSITIVE_RANKINGS_RESPONSE(this);
 });
 
 Then("validate that activity suitability is determined based on the weather conditions for each forecast day", function (this: CucumberWorld) {

@@ -30,3 +30,4 @@ Use this table to scan recent changes and validation status.
 | 2026-09-05 | [global-cucumber-bindings](./2026-09-05-0035-global-cucumber-bindings.md) | Global Cucumber binding uniqueness | pass |
 | 2026-09-05 | [activity-ranking-api-client](./2026-09-05-0044-add-activity-ranking-api-client.md) | API client | pass |
 | 2026-09-05 | [cucumber-lifecycle-async-readiness](./2026-09-05-0109-cucumber-lifecycle-async-readiness.md) | Cucumber lifecycle and World state | pass |
+| 2026-09-05 | [activity-ranking-client-targets](./2026-09-05-0131-activity-ranking-client-targets.md) | Fixture and SUT execution targets | pass / expected SUT red |

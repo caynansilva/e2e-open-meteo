@@ -9,8 +9,8 @@ Given("the user sends a request for a valid city for sequential forecast dates",
   steps.THE_USER_SENDS_A_REQUEST_FOR_A_VALID_CITY_FOR_SEQUENTIAL_FORECAST_DATES(this);
 });
 
-When("the API returns the sequential forecast response", function (this: CucumberWorld) {
-  steps.THE_API_RETURNS_THE_SEQUENTIAL_FORECAST_RESPONSE(this);
+When("the API returns the sequential forecast response", async function (this: CucumberWorld) {
+  await steps.THE_API_RETURNS_THE_SEQUENTIAL_FORECAST_RESPONSE(this);
 });
 
 Then("validate that the forecast dates are sequential", function (this: CucumberWorld) {

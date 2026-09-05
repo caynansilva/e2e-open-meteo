@@ -9,8 +9,8 @@ Given("the user sends a request for a valid city for the seven day forecast", fu
   steps.THE_USER_SENDS_A_REQUEST_FOR_A_VALID_CITY_FOR_THE_SEVEN_DAY_FORECAST(this);
 });
 
-When("the API returns the seven day forecast response", function (this: CucumberWorld) {
-  steps.THE_API_RETURNS_THE_SEVEN_DAY_FORECAST_RESPONSE(this);
+When("the API returns the seven day forecast response", async function (this: CucumberWorld) {
+  await steps.THE_API_RETURNS_THE_SEVEN_DAY_FORECAST_RESPONSE(this);
 });
 
 Then("validate that the response contains exactly {int} forecast days", function (this: CucumberWorld, expectedDays: number) {

@@ -1,5 +1,6 @@
 import { BaseClass } from "src/BaseClass";
 import type { CityNotFoundError } from "src/Types";
+import { ActivityRankingApiError } from "src/Api/ActivityRankingErrors";
 import {
   CucumberWorld,
   WORLD_DATA_KEYS
@@ -12,18 +13,23 @@ export class Sc021ValidateInvalidCityErrorSteps extends BaseClass {
     world.setData(WORLD_DATA_KEYS.invalidCityName, "Atlantis");
   }
 
-  public THE_API_RETURNS_THE_CITY_NOT_FOUND_ERROR(
+  public async THE_API_RETURNS_THE_CITY_NOT_FOUND_ERROR(
     world: CucumberWorld
-  ): void {
+  ): Promise<void> {
     const invalidCityName = this.getRequiredData<string>(
       world,
       WORLD_DATA_KEYS.invalidCityName
     );
-    const errorResponse = this.mockData.returnCityNotFoundError(
-      invalidCityName
-    );
+    try {
+      await this.activityRankingClient.getActivityRanking(invalidCityName);
+    } catch (error: unknown) {
+      if (error instanceof ActivityRankingApiError) {
+        world.setData(WORLD_DATA_KEYS.errorResponse, error.responseBody);
+        return;
+      }
 
-    world.setData(WORLD_DATA_KEYS.errorResponse, errorResponse);
+      throw error;
+    }
   }
 
   public VALIDATE_THAT_A_CLEAR_ERROR_RESPONSE_INDICATES_THAT_THE_CITY_COULD_NOT_BE_FOUND(
