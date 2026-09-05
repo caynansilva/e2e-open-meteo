@@ -1,0 +1,185 @@
+{
+  "city": "London",
+  "days": [
+    {
+      "date": "2026-09-04",
+      "activities": [
+        {
+          "date": "2026-09-05",
+          "dayActivities": [
+            {
+                "activityName": "Skiing",
+                "suitability": 100,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Surfing",
+                "suitability": 0,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Indoor  Sightseeing",
+                "suitability": 20,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Outdoor Sightseeing",
+                "suitability": 80,
+                "reasoning": "Clear skies and mild temperature"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-06",
+          "dayActivities": [
+            {
+                "activityName": "Skiing",
+                "suitability": 100,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Surfing",
+                "suitability": 0,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Indoor  Sightseeing",
+                "suitability": 20,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Outdoor Sightseeing",
+                "suitability": 80,
+                "reasoning": "Clear skies and mild temperature"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-07",
+          "dayActivities": [
+            {
+                "activityName": "Skiing",
+                "suitability": 100,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Surfing",
+                "suitability": 0,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Indoor  Sightseeing",
+                "suitability": 20,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Outdoor Sightseeing",
+                "suitability": 80,
+                "reasoning": "Clear skies and mild temperature"
+            }
+          ]
+        },
+        {
+         "date": "2026-09-08",
+          "dayActivities": [
+            {
+                "activityName": "Skiing",
+                "suitability": 100,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Surfing",
+                "suitability": 0,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Indoor  Sightseeing",
+                "suitability": 20,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Outdoor Sightseeing",
+                "suitability": 80,
+                "reasoning": "Clear skies and mild temperature"
+            }
+          ]
+        },
+        {
+         "date": "2026-09-09",
+          "dayActivities": [
+            {
+                "activityName": "Skiing",
+                "suitability": 100,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Surfing",
+                "suitability": 0,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Indoor  Sightseeing",
+                "suitability": 20,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Outdoor Sightseeing",
+                "suitability": 80,
+                "reasoning": "Clear skies and mild temperature"
+            }
+          ]
+        },
+        {
+         "date": "2026-09-10",
+          "dayActivities": [
+            {
+                "activityName": "Skiing",
+                "suitability": 100,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Surfing",
+                "suitability": 0,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Indoor  Sightseeing",
+                "suitability": 20,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Outdoor Sightseeing",
+                "suitability": 80,
+                "reasoning": "Clear skies and mild temperature"
+            }
+          ]
+        },
+        {
+         "date": "2026-09-11",
+          "dayActivities": [
+            {
+                "activityName": "Skiing",
+                "suitability": 100,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Surfing",
+                "suitability": 0,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Indoor  Sightseeing",
+                "suitability": 20,
+                "reasoning": "Clear skies and mild temperature"
+            },
+            {
+                "activityName": "Outdoor Sightseeing",
+                "suitability": 80,
+                "reasoning": "Clear skies and mild temperature"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

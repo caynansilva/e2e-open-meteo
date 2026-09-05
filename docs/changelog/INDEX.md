@@ -4,6 +4,8 @@ Use this table to scan recent changes and validation status.
 
 | Date | Entry | Area | Validation |
 |------|-------|------|------------|
+| 2026-09-04 | [activity-ranking-cucumber-bindings](./2026-09-04-1821-activity-ranking-cucumber-bindings.md) | Activity Ranking Cucumber bindings | partial (typecheck blocked by missing FormPage) |
+| 2026-09-04 | [activity-feature-groups](./2026-09-04-1630-activity-feature-groups.md) | Activity Ranking Gherkin organization | partial (expected unbound steps) |
 | 2026-09-04 | [interview-project-guidance](./2026-09-04-1402-interview-project-guidance.md) | Project guidance and skills | pass |
 | 2026-09-04 | [gherkin-pair-generator](./2026-09-04-1346-gherkin-pair-generator.md) | Gherkin Cucumber generator | pass |
 | 2026-09-04 | [google-async-bindings](./2026-09-04-1336-google-async-bindings.md) | Google Cucumber async handling | pass |

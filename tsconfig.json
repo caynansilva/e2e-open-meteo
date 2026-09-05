@@ -6,11 +6,11 @@
     "target": "ES2022",
     "lib": ["ES2022", "DOM"],
     "module": "CommonJS",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
 
     /* Emit */
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
@@ -37,7 +37,6 @@
 
     /* Path Aliases */
     "baseUrl": ".",
-    "ignoreDeprecations": "6.0",
     "paths": {
       "@core/*": ["./src/Core/*"],
       "@utils/*": ["./src/Utils/*"],

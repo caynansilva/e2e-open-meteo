@@ -22,9 +22,6 @@ Before answering, documenting, testing, or changing repository files:
 
 Specs return the Step command directly and do not import or pass `CucumberWorld`. Steps access the scenario-scoped World through the official Cucumber `world` proxy. Hooks may use `this: CucumberWorld` for lifecycle behavior.
 
-## Live API policy
-
-API scenarios run against live Open-Meteo services, never a localhost ranking service. Use `https://api.open-meteo.com/v1/forecast` for forecasts and `https://geocoding-api.open-meteo.com/v1/search` for location lookup when required by the scenario.
 
 ## Commands
 

@@ -3,5 +3,3 @@
  */
 export { WebElement } from "./WebElement";
 export { WebPage } from "./WebPage";
-export { FormPage } from "./FormPage";
-

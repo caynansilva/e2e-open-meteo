@@ -78,13 +78,6 @@ npx cucumber-js e2e-tests/google-search.feature
 
 UI scenarios use the `@ui` tag and launch Chromium through Cucumber hooks. API scenarios use `@api` and do not launch Chromium.
 
-The Activity Ranking feature calls live Open-Meteo APIs, never a localhost ranking service:
-
-```text
-GET https://geocoding-api.open-meteo.com/v1/search?name={city}
-GET https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&daily=...&forecast_days=7
-```
-
 See [the API contract](./docs/activity-ranking-api-contract.md).
 
 See [the Cucumber test structure](./docs/cucumber-test-structure.md) for the feature, spec, Steps, and minimal `CucumberWorld` pattern.
@@ -119,7 +112,3 @@ npm run build
 npx eslint .
 npx cucumber-js --dry-run "e2e-tests/**/*.feature"
 ```
-
-## Configuration
-
-Environment values can be supplied through `.env` or `.env.local`. API scenarios use live Open-Meteo defaults: `API_LOCAL_URL=https://api.open-meteo.com` and `GEOCODING_API_URL=https://geocoding-api.open-meteo.com`.
