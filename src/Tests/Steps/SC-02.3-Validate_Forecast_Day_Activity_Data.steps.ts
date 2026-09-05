@@ -1,21 +1,35 @@
-// Steps generated from: [SC-02] - Validate the API response contract
-import { world as cucumberWorld } from "@cucumber/cucumber";
-import { CucumberWorld } from "../../Support/CucumberWorld";
+import { BaseClass } from "src/BaseClass";
 
-export class Sc02ValidateTheApiResponseContractSteps {
-  private get world(): CucumberWorld {
-    return cucumberWorld as CucumberWorld;
+export class Sc023ValidateForecastDayActivityDataSteps extends BaseClass {
+  public requestedCityName: string;
+
+  constructor() {
+    super();
+    this.testName = "[SC-02.3] - Each forecast day contains all required activity data";
+    this.startTestMessage();
   }
 
   public THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_A_VALID_CITY(): void {
-    throw new Error("TODO: Implement the user requests the forecast activity rankings for a valid city");
+    this.requestedCityName = "London";
   }
 
   public THE_API_RETURNS_THE_RESPONSE(): void {
-    throw new Error("TODO: Implement the API returns the response");
+    this.activityObject = this.mockData.returnWeatherSensitiveMockData(
+      this.requestedCityName
+    );
+    this.actMgr.setCityActivities([this.activityObject]);
   }
 
   public VALIDATE_THAT_EACH_FORECAST_DAY_CONTAINS_THE_REQUIRED_ACTIVITY_DATA(): void {
-    throw new Error("TODO: Implement validate that each forecast day contains the required activity data");
+    this.assert(
+      this.actMgr.assertEveryForecastDayHasActivities(this.activityObject),
+      "Success! Every forecast day contains activity recommendations!",
+      "Fail! At least one forecast day does not contain activity recommendations!"
+    );
+    this.assert(
+      this.actMgr.assertActivityDataIsValid(this.activityObject),
+      "Success! Every forecast day contains complete activity data!",
+      "Fail! At least one forecast day does not contain complete activity data!"
+    );
   }
 }

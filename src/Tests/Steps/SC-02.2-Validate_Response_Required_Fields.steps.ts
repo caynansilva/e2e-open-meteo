@@ -1,21 +1,30 @@
-// Steps generated from: [SC-02] - Validate the API response contract
-import { world as cucumberWorld } from "@cucumber/cucumber";
-import { CucumberWorld } from "../../Support/CucumberWorld";
+import { BaseClass } from "src/BaseClass";
 
-export class Sc02ValidateTheApiResponseContractSteps {
-  private get world(): CucumberWorld {
-    return cucumberWorld as CucumberWorld;
+export class Sc022ValidateResponseRequiredFieldsSteps extends BaseClass {
+  public requestedCityName: string;
+
+  constructor() {
+    super();
+    this.testName = "[SC-02.2] - Validate that the response contract contains all required fields";
+    this.startTestMessage();
   }
 
   public THE_USER_SENDS_A_REQUEST_WITH_A_VALID_AND_UNIQUE_CITY_NAME(): void {
-    throw new Error("TODO: Implement the user sends a request with a valid and unique city name");
+    this.requestedCityName = "London";
   }
 
   public THE_API_RETURNS_THE_RESPONSE(): void {
-    throw new Error("TODO: Implement the API returns the response");
+    this.activityObject = this.mockData.returnWeatherSensitiveMockData(
+      this.requestedCityName
+    );
+    this.actMgr.setCityActivities([this.activityObject]);
   }
 
   public VALIDATE_THAT_ALL_FIELDS_DEFINED_BY_THE_API_CONTRACT_ARE_PRESENT_IN_THE_RESPONSE(): void {
-    throw new Error("TODO: Implement validate that all fields defined by the API contract are present in the response");
+    this.assert(
+      this.actMgr.assertResponseContractFieldsExist(this.activityObject),
+      "Success! The response contains the required City Name, Current Date, and Forecast Days fields!",
+      "Fail! The response does not contain all required City Name, Current Date, and Forecast Days fields!"
+    );
   }
 }

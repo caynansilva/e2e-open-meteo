@@ -1,8 +1,8 @@
 // Native Cucumber bindings generated from: [SC-02] - Validate the API response contract
 import { Given, Then, When } from "@cucumber/cucumber";
-import { Sc02ValidateTheApiResponseContractSteps } from "../Steps/SC-02.3-Validate_Forecast_Day_Activity_Data.steps";
+import { Sc023ValidateForecastDayActivityDataSteps } from "../Steps/SC-02.3-Validate_Forecast_Day_Activity_Data.steps";
 
-const steps = new Sc02ValidateTheApiResponseContractSteps();
+const steps = new Sc023ValidateForecastDayActivityDataSteps();
 
 Given("the user requests the forecast activity rankings for a valid city", () =>
     steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_A_VALID_CITY()

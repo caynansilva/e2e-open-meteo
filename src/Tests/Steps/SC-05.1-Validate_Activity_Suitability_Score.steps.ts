@@ -1,25 +1,45 @@
-// Steps generated from: [SC-05] - Validate activity ranking
-import { world as cucumberWorld } from "@cucumber/cucumber";
-import { CucumberWorld } from "../../Support/CucumberWorld";
+import { BaseClass } from "src/BaseClass";
 
-export class Sc05ValidateActivityRankingSteps {
-  private get world(): CucumberWorld {
-    return cucumberWorld as CucumberWorld;
+export class Sc051ValidateActivitySuitabilityScoreSteps extends BaseClass {
+  public requestedCityName: string;
+
+  constructor() {
+    super();
+    this.testName = "[SC-05.1] - Activities have a suitability score from 0 to 100 for each forecast day";
+    this.startTestMessage();
   }
 
   public THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_A_VALID_CITY(): void {
-    throw new Error("TODO: Implement the user requests the forecast activity rankings for a valid city");
+    this.requestedCityName = "London";
   }
 
   public THE_API_RETURNS_THE_RESPONSE(): void {
-    throw new Error("TODO: Implement the API returns the response");
+    this.activityObject = this.mockData.returnWeatherSensitiveMockData(
+      this.requestedCityName
+    );
+    this.actMgr.setCityActivities([this.activityObject]);
   }
 
   public VALIDATE_THAT_EACH_FORECAST_DAY_CONTAINS_A_RANKED_LIST_OF_ACTIVITIES(): void {
-    throw new Error("TODO: Implement validate that each forecast day contains a ranked list of activities");
+    this.assert(
+      this.actMgr.assertEveryForecastDayHasActivities(this.activityObject),
+      "Success! Every forecast day contains a ranked activity list!",
+      "Fail! At least one forecast day does not contain a ranked activity list!"
+    );
   }
 
-  public VALIDATE_THAT_EACH_ACTIVITY_HAS_A_SUITABILITY_SCORE_BETWEEN_INT_AND_INT(expectedValue: number, expectedValue2: number): void {
-    throw new Error("TODO: Implement validate that each activity has a suitability score between 0 and 100");
+  public VALIDATE_THAT_EACH_ACTIVITY_HAS_A_SUITABILITY_SCORE_BETWEEN_INT_AND_INT(
+    minimumSuitability: number,
+    maximumSuitability: number
+  ): void {
+    this.assert(
+      this.actMgr.assertActivitySuitabilityValuesWithinRange(
+        this.activityObject,
+        minimumSuitability,
+        maximumSuitability
+      ),
+      `Success! Every activity suitability score is between ${minimumSuitability} and ${maximumSuitability}!`,
+      `Fail! At least one activity suitability score is outside ${minimumSuitability} and ${maximumSuitability}!`
+    );
   }
 }

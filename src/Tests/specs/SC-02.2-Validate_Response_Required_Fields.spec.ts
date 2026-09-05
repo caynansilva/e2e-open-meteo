@@ -1,8 +1,8 @@
 // Native Cucumber bindings generated from: [SC-02] - Validate the API response contract
 import { Given, Then, When } from "@cucumber/cucumber";
-import { Sc02ValidateTheApiResponseContractSteps } from "../Steps/SC-02.2-Validate_Response_Required_Fields.steps";
+import { Sc022ValidateResponseRequiredFieldsSteps } from "../Steps/SC-02.2-Validate_Response_Required_Fields.steps";
 
-const steps = new Sc02ValidateTheApiResponseContractSteps();
+const steps = new Sc022ValidateResponseRequiredFieldsSteps();
 
 Given("the user sends a request with a valid and unique city name", () =>
     steps.THE_USER_SENDS_A_REQUEST_WITH_A_VALID_AND_UNIQUE_CITY_NAME()

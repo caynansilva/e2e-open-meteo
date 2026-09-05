@@ -20,11 +20,11 @@ export class BaseClass {
         return cucumberWorld as CucumberWorld;
     }
 
-    public logMessage(message): void {
-        console.log(message)
+    public logMessage(message: string): void {
+        console.log(message);
     }
 
-    public startTestMessage(): void{
+    public startTestMessage(): void {
         this.logMessage(`----------------------------------------------`);
         this.logMessage(`Starting tests for Scenario: ${this.testName}.`);
         this.logMessage(`----------------------------------------------`);
@@ -34,9 +34,13 @@ export class BaseClass {
         condition: boolean,
         successMessage: string = "Assertion Success!",
         failMessage: string = "Assertion Error!"
-    ) {
-        condition == true
-            ? console.log(successMessage)
-            : console.log(failMessage);
+    ): void {
+        if (condition) {
+            console.log(successMessage);
+            return;
+        }
+
+        console.log(failMessage);
+        throw new Error(failMessage);
     }
 }

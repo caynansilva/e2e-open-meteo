@@ -1,8 +1,8 @@
 // Native Cucumber bindings generated from: [SC-05] - Validate activity ranking
 import { Given, Then, When } from "@cucumber/cucumber";
-import { Sc05ValidateActivityRankingSteps } from "../Steps/SC-05.2-Validate_Activity_Ranking_Order.steps";
+import { Sc052ValidateActivityRankingOrderSteps } from "../Steps/SC-05.2-Validate_Activity_Ranking_Order.steps";
 
-const steps = new Sc05ValidateActivityRankingSteps();
+const steps = new Sc052ValidateActivityRankingOrderSteps();
 
 Given("the user requests the forecast activity rankings for a valid city", () =>
     steps.THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_A_VALID_CITY()

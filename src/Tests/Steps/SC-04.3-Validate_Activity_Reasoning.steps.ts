@@ -1,21 +1,30 @@
-// Steps generated from: [SC-04] - Validate activity recommendations
-import { world as cucumberWorld } from "@cucumber/cucumber";
-import { CucumberWorld } from "../../Support/CucumberWorld";
+import { BaseClass } from "src/BaseClass";
 
-export class Sc04ValidateActivityRecommendationsSteps {
-  private get world(): CucumberWorld {
-    return cucumberWorld as CucumberWorld;
+export class Sc043ValidateActivityReasoningSteps extends BaseClass {
+  public requestedCityName: string;
+
+  constructor() {
+    super();
+    this.testName = "[SC-04.3] - Every activity includes reasoning for its suitability";
+    this.startTestMessage();
   }
 
   public THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_A_VALID_CITY(): void {
-    throw new Error("TODO: Implement the user requests the forecast activity rankings for a valid city");
+    this.requestedCityName = "London";
   }
 
   public THE_API_RETURNS_THE_RESPONSE(): void {
-    throw new Error("TODO: Implement the API returns the response");
+    this.activityObject = this.mockData.returnWeatherSensitiveMockData(
+      this.requestedCityName
+    );
+    this.actMgr.setCityActivities([this.activityObject]);
   }
 
   public VALIDATE_THAT_EVERY_ACTIVITY_INCLUDES_REASONING_EXPLAINING_ITS_SUITABILITY(): void {
-    throw new Error("TODO: Implement validate that every activity includes reasoning explaining its suitability");
+    this.assert(
+      this.actMgr.assertActivityReasoningIsValid(this.activityObject),
+      "Success! Every activity includes suitability reasoning!",
+      "Fail! At least one activity does not include suitability reasoning!"
+    );
   }
 }

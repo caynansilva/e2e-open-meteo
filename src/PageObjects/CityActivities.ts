@@ -1,6 +1,7 @@
 import type {
     Activity,
     CityActivity,
+    CityNotFoundError,
     forecastDays as ForecastDay
 } from "../Types/index";
 
@@ -9,6 +10,11 @@ export const SUPPORTED_ACTIVITY_NAMES = [
     "Surfing",
     "Outdoor Sightseeing",
     "Indoor Sightseeing"
+] as const;
+
+const WEATHER_SENSITIVE_ACTIVITY_SCORES = [
+    { activityName: "Skiing", activitySuitability: 95 },
+    { activityName: "Outdoor Sightseeing", activitySuitability: 85 }
 ] as const;
 
 
@@ -86,6 +92,26 @@ export class ActivityManager {
         return this.getActivitiesByCityName(cityName) === undefined;
     }
 
+    public assertCityNotFoundError(
+        errorResponse: CityNotFoundError,
+        cityName: string
+    ): boolean {
+        const errorMessage = this.normalizeText(errorResponse.error);
+        const expectedCityName = this.normalizeText(cityName);
+
+        return expectedCityName.length > 0 &&
+            errorMessage.includes(expectedCityName) &&
+            errorMessage.includes("could not be found");
+    }
+
+    public assertResponseContractFieldsExist(
+        cityActivity: CityActivity
+    ): boolean {
+        return this.assertCityActivityExists(cityActivity) &&
+            this.assertCurrentDateExists(cityActivity) &&
+            Array.isArray(cityActivity.forecastDays);
+    }
+
     public assertPartialCityResultsMatch(
         partialCityName: string,
         results: CityActivity[]
@@ -106,6 +132,21 @@ export class ActivityManager {
         return Number.isInteger(maximumResults) &&
             maximumResults > 0 &&
             results.length <= maximumResults;
+    }
+
+    public assertMultiplePartialCityResults(
+        results: CityActivity[]
+    ): boolean {
+        return results.length > 1;
+    }
+
+    public assertPartialCityResultsReachLimit(
+        results: CityActivity[],
+        maximumResults: number
+    ): boolean {
+        return Number.isInteger(maximumResults) &&
+            maximumResults > 0 &&
+            results.length === maximumResults;
     }
 
 
@@ -189,6 +230,18 @@ export class ActivityManager {
         }
 
         return this.daysBetween(currentDate, firstForecastDate) === 1;
+    }
+
+    public assertForecastDoesNotIncludeCurrentDate(
+        cityActivity: CityActivity
+    ): boolean {
+        return this.assertCurrentDateExists(cityActivity) &&
+            cityActivity.forecastDays.every((forecastDay) =>
+                !this.areSameCalendarDate(
+                    forecastDay.date,
+                    cityActivity.currentDate
+                )
+            );
     }
 
     public assertForecastDatesAreValid(
@@ -296,13 +349,44 @@ export class ActivityManager {
     public assertActivitySuitabilityValuesAreValid(
         cityActivity: CityActivity
     ): boolean {
+        return this.assertActivitySuitabilityValuesWithinRange(
+            cityActivity,
+            0,
+            100
+        );
+    }
+
+    public assertActivitySuitabilityValuesWithinRange(
+        cityActivity: CityActivity,
+        minimumSuitability: number,
+        maximumSuitability: number
+    ): boolean {
+        if (!this.isValidSuitabilityRange(
+            minimumSuitability,
+            maximumSuitability
+        )) {
+            return false;
+        }
+
         return cityActivity.forecastDays.length > 0 &&
             cityActivity.forecastDays.every((forecastDay) =>
                 forecastDay.activities.length > 0 &&
                 forecastDay.activities.every((activity) =>
                     Number.isFinite(activity.activitySuitability) &&
-                    activity.activitySuitability >= 0 &&
-                    activity.activitySuitability <= 100
+                    activity.activitySuitability >= minimumSuitability &&
+                    activity.activitySuitability <= maximumSuitability
+                )
+            );
+    }
+
+    public assertWeatherSensitiveActivitySuitability(
+        cityActivity: CityActivity
+    ): boolean {
+        return cityActivity.forecastDays.length > 0 &&
+            cityActivity.forecastDays.every((forecastDay, index) =>
+                this.hasExpectedWeatherSensitiveActivityScore(
+                    forecastDay.activities,
+                    index
                 )
             );
     }
@@ -427,6 +511,33 @@ export class ActivityManager {
 
     private normalizeText(value: string): string {
         return value.trim().toLowerCase();
+    }
+
+    private hasExpectedWeatherSensitiveActivityScore(
+        activities: Activity[],
+        forecastDayIndex: number
+    ): boolean {
+        const expectedScore = WEATHER_SENSITIVE_ACTIVITY_SCORES[
+            forecastDayIndex % WEATHER_SENSITIVE_ACTIVITY_SCORES.length
+        ];
+
+        if (!expectedScore) {
+            return false;
+        }
+
+        return activities.some((activity) =>
+            activity.activityName === expectedScore.activityName &&
+            activity.activitySuitability === expectedScore.activitySuitability
+        );
+    }
+
+    private isValidSuitabilityRange(
+        minimumSuitability: number,
+        maximumSuitability: number
+    ): boolean {
+        return Number.isFinite(minimumSuitability) &&
+            Number.isFinite(maximumSuitability) &&
+            minimumSuitability <= maximumSuitability;
     }
 
     private areSameCalendarDate(

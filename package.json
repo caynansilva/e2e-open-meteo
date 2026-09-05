@@ -5,6 +5,7 @@
   "scripts": {
     "build": "tsc",
     "test": "cucumber-js",
+    "test:all": "node tools/run-cucumber-features.js",
     "test:feature": "cucumber-js",
     "test:playwright": "playwright test",
     "test:cucumber": "cucumber-js",

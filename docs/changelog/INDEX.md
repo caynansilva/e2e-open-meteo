@@ -4,6 +4,11 @@ Use this table to scan recent changes and validation status.
 
 | Date | Entry | Area | Validation |
 |------|-------|------|------------|
+| 2026-09-04 | [isolated-cucumber-suite](./2026-09-04-2339-isolated-cucumber-suite.md) | Bulk Cucumber execution | pass |
+| 2026-09-04 | [activity-recommendation-ranking-tests](./2026-09-04-2332-activity-recommendation-ranking-tests.md) | SC-04 and SC-05 Cucumber scenarios | partial (pre-existing typecheck failure) |
+| 2026-09-04 | [response-forecast-scenarios](./2026-09-04-2326-response-forecast-scenarios.md) | SC-02 and SC-03 Cucumber scenarios | partial (pre-existing typecheck failure) |
+| 2026-09-04 | [partial-city-search-tests](./2026-09-04-2320-partial-city-search-tests.md) | SC-01.2 to SC-01.4 Cucumber scenarios | partial (pre-existing typecheck failure) |
+| 2026-09-04 | [sc011-test-creation-pattern](./2026-09-04-2314-sc011-test-creation-pattern.md) | SC-01.1 Cucumber test pattern | pass |
 | 2026-09-04 | [isolate-sc011-runner](./2026-09-04-2238-isolate-sc011-runner.md) | SC-01.1 Cucumber execution | pass |
 | 2026-09-04 | [split-gherkin-scenarios](./2026-09-04-1900-split-gherkin-scenarios.md) | Gherkin feature organization | partial (undefined pre-existing bindings) |
 | 2026-09-04 | [activity-ranking-cucumber-bindings](./2026-09-04-1821-activity-ranking-cucumber-bindings.md) | Activity Ranking Cucumber bindings | partial (typecheck blocked by missing FormPage) |

@@ -1,9 +1,8 @@
 // Native Cucumber bindings generated from: [SC-03] - Validate forecast days
 import { Given, Then, When } from "@cucumber/cucumber";
-import { Sc03ValidateForecastDaysSteps } from "../Steps/SC-03.3-Validate_Sequential_Forecast_Dates.steps";
+import { Sc033ValidateSequentialForecastDatesSteps } from "../Steps/SC-03.3-Validate_Sequential_Forecast_Dates.steps";
 
-const steps = new Sc03ValidateForecastDaysSteps(
-);
+const steps = new Sc033ValidateSequentialForecastDatesSteps();
 
 Given("the user sends a request for a valid city", () =>
     steps.THE_USER_SENDS_A_REQUEST_FOR_A_VALID_CITY()

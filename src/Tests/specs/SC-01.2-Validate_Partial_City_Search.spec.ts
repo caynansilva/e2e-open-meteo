@@ -1,8 +1,8 @@
 // Native Cucumber bindings generated from: [SC-01] - Validate city search and resolution
 import { Given, Then, When } from "@cucumber/cucumber";
-import { Sc01ValidateCitySearchAndResolutionSteps } from "../Steps/SC-01.2-Validate_Partial_City_Search.steps";
+import { Sc012ValidatePartialCitySearchSteps } from "../Steps/SC-01.2-Validate_Partial_City_Search.steps";
 
-const steps = new Sc01ValidateCitySearchAndResolutionSteps();
+const steps = new Sc012ValidatePartialCitySearchSteps();
 
 Given("the user sends a request with a valid partial city name", () =>
     steps.THE_USER_SENDS_A_REQUEST_WITH_A_VALID_PARTIAL_CITY_NAME()

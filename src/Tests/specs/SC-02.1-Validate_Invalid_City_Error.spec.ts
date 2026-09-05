@@ -1,8 +1,8 @@
 // Native Cucumber bindings generated from: [SC-02] - Validate the API response contract
 import { Given, Then, When } from "@cucumber/cucumber";
-import { Sc02ValidateTheApiResponseContractSteps } from "../Steps/SC-02.1-Validate_Invalid_City_Error.steps";
+import { Sc021ValidateInvalidCityErrorSteps } from "../Steps/SC-02.1-Validate_Invalid_City_Error.steps";
 
-const steps = new Sc02ValidateTheApiResponseContractSteps();
+const steps = new Sc021ValidateInvalidCityErrorSteps();
 
 Given("the user sends a request with an invalid city name", () =>
     steps.THE_USER_SENDS_A_REQUEST_WITH_AN_INVALID_CITY_NAME()

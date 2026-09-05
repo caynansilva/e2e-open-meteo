@@ -1,21 +1,30 @@
-// Steps generated from: [SC-05] - Validate activity ranking
-import { world as cucumberWorld } from "@cucumber/cucumber";
-import { CucumberWorld } from "../../Support/CucumberWorld";
+import { BaseClass } from "src/BaseClass";
 
-export class Sc05ValidateActivityRankingSteps {
-  private get world(): CucumberWorld {
-    return cucumberWorld as CucumberWorld;
+export class Sc052ValidateActivityRankingOrderSteps extends BaseClass {
+  public requestedCityName: string;
+
+  constructor() {
+    super();
+    this.testName = "[SC-05.2] - Activities are ordered from highest to lowest suitability for each forecast day";
+    this.startTestMessage();
   }
 
   public THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_A_VALID_CITY(): void {
-    throw new Error("TODO: Implement the user requests the forecast activity rankings for a valid city");
+    this.requestedCityName = "London";
   }
 
   public THE_API_RETURNS_THE_RESPONSE(): void {
-    throw new Error("TODO: Implement the API returns the response");
+    this.activityObject = this.mockData.returnWeatherSensitiveMockData(
+      this.requestedCityName
+    );
+    this.actMgr.setCityActivities([this.activityObject]);
   }
 
   public VALIDATE_THAT_THE_ACTIVITIES_FOR_EACH_FORECAST_DAY_ARE_ORDERED_FROM_HIGHEST_TO_LOWEST_SUITABILITY(): void {
-    throw new Error("TODO: Implement validate that the activities for each forecast day are ordered from highest to lowest suitability");
+    this.assert(
+      this.actMgr.assertActivitiesAreRankedBySuitability(this.activityObject),
+      "Success! Activities are ordered from highest to lowest suitability every forecast day!",
+      "Fail! Activities are not ordered from highest to lowest suitability every forecast day!"
+    );
   }
 }
