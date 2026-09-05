@@ -1,36 +1,60 @@
 import { BaseClass } from "src/BaseClass";
+import type { CityActivity } from "src/Types";
+import {
+  CucumberWorld,
+  WORLD_DATA_KEYS
+} from "src/Support/CucumberWorld";
 
 export class Sc032ValidateForecastStartDateSteps extends BaseClass {
-  public requestedCityName: string;
-
-  constructor() {
-    super();
-    this.testName = "[SC-03.2] - Forecast starts from the next day and does not include the current day";
-    this.startTestMessage();
+  public THE_USER_SENDS_A_REQUEST_FOR_A_VALID_CITY_FOR_THE_FORECAST_START_DATE(
+    world: CucumberWorld
+  ): void {
+    world.setData(WORLD_DATA_KEYS.requestedCity, "London");
   }
 
-  public THE_USER_SENDS_A_REQUEST_FOR_A_VALID_CITY_FOR_THE_FORECAST_START_DATE(): void {
-    this.requestedCityName = "London";
-  }
-
-  public THE_API_RETURNS_THE_FORECAST_DATE_RESPONSE(): void {
-    this.activityObject = this.mockData.returnWeatherSensitiveMockData(
-      this.requestedCityName
+  public THE_API_RETURNS_THE_FORECAST_DATE_RESPONSE(
+    world: CucumberWorld
+  ): void {
+    const requestedCity = this.getRequiredData<string>(
+      world,
+      WORLD_DATA_KEYS.requestedCity
     );
-    this.actMgr.setCityActivities([this.activityObject]);
+    const activityResponse = this.mockData.returnWeatherSensitiveMockData(
+      requestedCity
+    );
+
+    world.setData(WORLD_DATA_KEYS.activityResponse, activityResponse);
   }
 
-  public VALIDATE_THAT_THE_FORECAST_STARTS_FROM_THE_NEXT_DAY(): void {
+  public VALIDATE_THAT_THE_FORECAST_STARTS_FROM_THE_NEXT_DAY(
+    world: CucumberWorld
+  ): void {
+    const activityResponse = this.getRequiredData<CityActivity>(
+      world,
+      WORLD_DATA_KEYS.activityResponse
+    );
+    const activityManager = this.createActivityManager();
+
     this.assert(
-      this.actMgr.assertForecastStartsOnNextDay(this.activityObject),
+      activityManager.assertForecastStartsOnNextDay(activityResponse),
       "Success! The forecast starts on the next calendar day!",
       "Fail! The forecast does not start on the next calendar day!"
     );
   }
 
-  public VALIDATE_THAT_THE_CURRENT_DATE_IS_NOT_INCLUDED_IN_THE_FORECAST(): void {
+  public VALIDATE_THAT_THE_CURRENT_DATE_IS_NOT_INCLUDED_IN_THE_FORECAST(
+    world: CucumberWorld
+  ): void {
+    const activityResponse = this.getRequiredData<CityActivity>(
+      world,
+      WORLD_DATA_KEYS.activityResponse
+    );
+    const activityManager = this.createActivityManager();
+
     this.assert(
-      this.actMgr.assertForecastDoesNotIncludeCurrentDate(this.activityObject),
+      activityManager.assertForecastDoesNotIncludeCurrentDate(
+        activityResponse
+      ),
       "Success! The current date is not included in the forecast!",
       "Fail! The current date is included in the forecast!"
     );

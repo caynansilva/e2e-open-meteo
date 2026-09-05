@@ -18,6 +18,7 @@ module.exports = {
       ...requireSpecs
     ],
     format: ["progress"],
+    parallel: 0,
     publish: false
   }
 };

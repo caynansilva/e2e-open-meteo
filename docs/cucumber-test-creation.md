@@ -17,7 +17,7 @@ Feature (.feature)
 | Feature | Descrever o comportamento esperado em linguagem de negócio. | Mencionar código, mocks ou métodos. |
 | Spec | Registrar a frase Gherkin e chamar um comando de Steps. | Conter regra, assertion ou acesso a Page Object. |
 | Steps | Orquestrar o cenário, preparar dados e dar significado às mensagens de validação. | Reimplementar lógica de negócio. |
-| BaseClass | Reutilizar fixture, Page Object, resposta, log inicial e assertion. | Conter comportamento específico de um cenário. |
+| BaseClass | Reutilizar fixture, helpers stateless e assertion. | Conter comportamento específico de um cenário ou estado do cenário. |
 | Page Object | Implementar buscas, regras e validações booleanas do domínio. | Conhecer Gherkin ou Cucumber. |
 
 ## Como criar um cenário
@@ -25,8 +25,8 @@ Feature (.feature)
 1. Escreva o `.feature` com Given/When/Then de negócio.
 2. Crie o `*.spec.ts` correspondente. Cada frase deve delegar diretamente para um método público da classe de Steps.
 3. Crie uma classe de Steps exclusiva para o cenário, estendendo `BaseClass`.
-4. No construtor, chame `super()`, defina `testName` com o título exato do cenário e chame `startTestMessage()`.
-5. Use `mockData` para preparar os dados e `actMgr` para chamar comportamentos públicos de `ActivityManager`.
+4. Não use o construtor para logging ou dados do cenário; o log inicial é responsabilidade do hook `Before`.
+5. Receba `CucumberWorld` nos métodos de Steps e use `world.setData`/`world.getData` para todo estado mutável do cenário.
 6. Para cada resultado esperado, use `this.assert` com mensagens de sucesso e falha específicas.
 7. Execute o feature isoladamente antes de considerar o cenário pronto.
 
@@ -47,60 +47,86 @@ Feature: [SC-XX] - Nome da capacidade
 
 ```ts
 import { Given, Then, When } from "@cucumber/cucumber";
+import type { CucumberWorld } from "src/Support/CucumberWorld";
 import { ScXxScenarioSteps } from "../Steps/SC-XX-Scenario.steps";
 
 const steps = new ScXxScenarioSteps();
 
-Given("o contexto de negócio é preparado", () =>
-  steps.PREPARAR_CONTEXTO_DE_NEGOCIO()
-);
+Given("o contexto de negócio é preparado", function (this: CucumberWorld) {
+  steps.PREPARAR_CONTEXTO_DE_NEGOCIO(this);
+});
 
-When("a resposta é obtida", () =>
-  steps.OBTER_RESPOSTA()
-);
+When("a resposta é obtida", function (this: CucumberWorld) {
+  steps.OBTER_RESPOSTA(this);
+});
 
-Then("o resultado esperado é validado", () =>
-  steps.VALIDAR_RESULTADO_ESPERADO()
-);
+Then("o resultado esperado é validado", function (this: CucumberWorld) {
+  steps.VALIDAR_RESULTADO_ESPERADO(this);
+});
+```
+Para um Step que chama o `ActivityRankingApiClient`, use `async` no binding e aguarde o método delegado:
+
+```ts
+When("a resposta HTTP é obtida", async function (this: CucumberWorld) {
+  await steps.OBTER_RESPOSTA_HTTP(this);
+});
 ```
 
 ### Steps individual
 
 ```ts
 import { BaseClass } from "src/BaseClass";
+import {
+  CucumberWorld,
+  WORLD_DATA_KEYS
+} from "src/Support/CucumberWorld";
+import type { CityActivity } from "src/Types";
 
 export class ScXxScenarioSteps extends BaseClass {
-  public requestedCity: string;
-
-  constructor() {
-    super();
-    this.testName = "[SC-XX.X] - Resultado esperado";
-    this.startTestMessage();
-  }
-
-  public PREPARAR_CONTEXTO_DE_NEGOCIO(): void {
-    this.requestedCity = this.mockData.getRandomCityName();
-  }
-
-  public OBTER_RESPOSTA(): void {
-    this.activityObject = this.mockData.returnWeatherSensitiveMockData(
-      this.requestedCity
+  public PREPARAR_CONTEXTO_DE_NEGOCIO(world: CucumberWorld): void {
+    world.setData(
+      WORLD_DATA_KEYS.requestedCity,
+      this.mockData.getRandomCityName()
     );
   }
 
-  public VALIDAR_RESULTADO_ESPERADO(): void {
-    this.actMgr.setCityActivities([this.activityObject]);
+  public OBTER_RESPOSTA(world: CucumberWorld): void {
+    const requestedCity = this.getRequiredData<string>(
+      world,
+      WORLD_DATA_KEYS.requestedCity
+    );
+
+    world.setData(
+      WORLD_DATA_KEYS.activityResponse,
+      this.mockData.returnWeatherSensitiveMockData(requestedCity)
+    );
+  }
+
+  public VALIDAR_RESULTADO_ESPERADO(world: CucumberWorld): void {
+    const activityResponse = this.getRequiredData<CityActivity>(
+      world,
+      WORLD_DATA_KEYS.activityResponse
+    );
+    const requestedCity = this.getRequiredData<string>(
+      world,
+      WORLD_DATA_KEYS.requestedCity
+    );
+    const activityManager = this.createActivityManager();
 
     this.assert(
-      this.actMgr.assertCityActivityExists(this.activityObject),
+      activityManager.assertCityActivityExists(activityResponse),
       'Success! The field "City Name" exists in the contract!',
       'Fail! The field "City Name" does not exist in the contract!'
     );
 
     this.assert(
-      this.actMgr.assertCityNameMatches(this.activityObject, this.requestedCity),
-      `Success! The field "CityName" matches the expected result "${this.requestedCity}"!`,
-      `Fail! The field "CityName" does not match the expected result "${this.requestedCity}"!`
+      activityManager.assertCityNameMatches(activityResponse, requestedCity),
+      'Success! The field "CityName" matches the expected result "' +
+        requestedCity +
+        '"!',
+      'Fail! The field "CityName" does not match the expected result "' +
+        requestedCity +
+        '"!'
     );
   }
 }
@@ -114,7 +140,7 @@ export class ScXxScenarioSteps extends BaseClass {
 - quando é falsa, imprime `failMessage` e lança um erro, deixando o step e o cenário vermelhos;
 - cada mensagem deve indicar claramente o campo ou comportamento testado; inclua o valor esperado quando fizer sentido.
 
-O construtor gera o cabeçalho do cenário antes dos steps, por exemplo:
+O hook `Before` gera o cabeçalho no início da execução do cenário, por exemplo:
 
 ```text
 Starting tests for Scenario: [SC-01.1] - Retrieve activity rankings using an exact city name.
@@ -123,8 +149,9 @@ Starting tests for Scenario: [SC-01.1] - Retrieve activity rankings using an exa
 ## Checklist
 
 - Uma classe de Steps individual existe para o cenário.
-- Ela estende `BaseClass` e inicia o log com seu `testName`.
+- Ela estende `BaseClass`; o log inicial é gerado pelo hook `Before`.
 - O spec é apenas uma ponte entre Gherkin e Steps.
+- Todo estado mutável do cenário fica no `CucumberWorld`, não na classe de Steps.
 - Toda regra e validação booleana está em um Page Object.
 - Cada assertion usa `this.assert` com mensagem de sucesso e de falha.
 - Não foi criado nem usado um fluxo compartilhado de Steps para o cenário.
@@ -136,4 +163,4 @@ Starting tests for Scenario: [SC-01.1] - Retrieve activity rankings using an exa
 npm test e2e-tests\SC-01.1-Validate_Exact_City_Search.feature
 ```
 
-Este padrão mantém estado nos campos da classe de Steps; portanto, a configuração atual deve continuar executando cenários de forma serial. Antes de habilitar paralelismo, migre o estado para uma estrutura isolada por cenário.
+Os Steps permanecem sem estado específico do cenário e o `cucumber.js` mantém `parallel: 0` para uma execução determinística durante esta fase.

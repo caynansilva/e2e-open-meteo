@@ -1,38 +1,61 @@
 import { BaseClass } from "src/BaseClass";
 import { cityNames } from "src/fixtures/MockCityActivitiesFactory";
 import type { CityActivity } from "src/Types";
+import {
+  CucumberWorld,
+  WORLD_DATA_KEYS
+} from "src/Support/CucumberWorld";
 
 export class Sc012ValidatePartialCitySearchSteps extends BaseClass {
-  public partialCityName: string;
-  public searchResults: CityActivity[];
-
-  constructor() {
-    super();
-    this.testName = "[SC-01.2] - Retrieve possible locations using a partial city name";
-    this.startTestMessage();
+  public THE_USER_SENDS_A_REQUEST_WITH_A_VALID_PARTIAL_CITY_NAME_FOR_MATCHING_LOCATIONS(
+    world: CucumberWorld
+  ): void {
+    world.setData(WORLD_DATA_KEYS.partialCityName, "New");
   }
 
-  public THE_USER_SENDS_A_REQUEST_WITH_A_VALID_PARTIAL_CITY_NAME_FOR_MATCHING_LOCATIONS(): void {
-    this.partialCityName = "New";
-  }
+  public THE_API_RETURNS_THE_MATCHING_PARTIAL_CITY_RESPONSE(
+    world: CucumberWorld
+  ): void {
+    const partialCityName = this.getRequiredData<string>(
+      world,
+      WORLD_DATA_KEYS.partialCityName
+    );
+    const activityManager = this.createActivityManager();
 
-  public THE_API_RETURNS_THE_MATCHING_PARTIAL_CITY_RESPONSE(): void {
-    this.actMgr.setCityActivities(
+    activityManager.setCityActivities(
       this.mockData.getNamedCityActivities(cityNames)
     );
-    this.searchResults = this.actMgr.getActivitiesByPartialCityName(
-      this.partialCityName
+    const searchResults = activityManager.getActivitiesByPartialCityName(
+      partialCityName
     );
+
+    world.setData(WORLD_DATA_KEYS.searchResults, searchResults);
   }
 
-  public VALIDATE_THAT_THE_RESPONSE_CONTAINS_RESULTS_MATCHING_THE_PROVIDED_PARTIAL_CITY_NAME(): void {
+  public VALIDATE_THAT_THE_RESPONSE_CONTAINS_RESULTS_MATCHING_THE_PROVIDED_PARTIAL_CITY_NAME(
+    world: CucumberWorld
+  ): void {
+    const partialCityName = this.getRequiredData<string>(
+      world,
+      WORLD_DATA_KEYS.partialCityName
+    );
+    const searchResults = this.getRequiredData<CityActivity[]>(
+      world,
+      WORLD_DATA_KEYS.searchResults
+    );
+    const activityManager = this.createActivityManager();
+
     this.assert(
-      this.actMgr.assertPartialCityResultsMatch(
-        this.partialCityName,
-        this.searchResults
+      activityManager.assertPartialCityResultsMatch(
+        partialCityName,
+        searchResults
       ),
-      `Success! All returned locations match the partial city name "${this.partialCityName}"!`,
-      `Fail! Not all returned locations match the partial city name "${this.partialCityName}"!`
+      "Success! All returned locations match the partial city name \"" +
+        partialCityName +
+        "\"!",
+      "Fail! Not all returned locations match the partial city name \"" +
+        partialCityName +
+        "\"!"
     );
   }
 }

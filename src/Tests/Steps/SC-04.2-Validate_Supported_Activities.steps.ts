@@ -1,29 +1,43 @@
 import { BaseClass } from "src/BaseClass";
+import type { CityActivity } from "src/Types";
+import {
+  CucumberWorld,
+  WORLD_DATA_KEYS
+} from "src/Support/CucumberWorld";
 
 export class Sc042ValidateSupportedActivitiesSteps extends BaseClass {
-  public requestedCityName: string;
-
-  constructor() {
-    super();
-    this.testName = "[SC-04.2] - Every forecast day contains all supported activities";
-    this.startTestMessage();
+  public THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_SUPPORTED_ACTIVITIES_VALIDATION(
+    world: CucumberWorld
+  ): void {
+    world.setData(WORLD_DATA_KEYS.requestedCity, "London");
   }
 
-  public THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_SUPPORTED_ACTIVITIES_VALIDATION(): void {
-    this.requestedCityName = "London";
-  }
-
-  public THE_API_RETURNS_THE_SUPPORTED_ACTIVITIES_RESPONSE(): void {
-    this.activityObject = this.mockData.returnWeatherSensitiveMockData(
-      this.requestedCityName
+  public THE_API_RETURNS_THE_SUPPORTED_ACTIVITIES_RESPONSE(
+    world: CucumberWorld
+  ): void {
+    const requestedCity = this.getRequiredData<string>(
+      world,
+      WORLD_DATA_KEYS.requestedCity
     );
-    this.actMgr.setCityActivities([this.activityObject]);
+    const activityResponse = this.mockData.returnWeatherSensitiveMockData(
+      requestedCity
+    );
+
+    world.setData(WORLD_DATA_KEYS.activityResponse, activityResponse);
   }
 
-  public VALIDATE_THAT_EVERY_FORECAST_DAY_CONTAINS_ALL_SUPPORTED_ACTIVITIES(): void {
+  public VALIDATE_THAT_EVERY_FORECAST_DAY_CONTAINS_ALL_SUPPORTED_ACTIVITIES(
+    world: CucumberWorld
+  ): void {
+    const activityResponse = this.getRequiredData<CityActivity>(
+      world,
+      WORLD_DATA_KEYS.activityResponse
+    );
+    const activityManager = this.createActivityManager();
+
     this.assert(
-      this.actMgr.assertEveryForecastDayContainsAllSupportedActivities(
-        this.activityObject
+      activityManager.assertEveryForecastDayContainsAllSupportedActivities(
+        activityResponse
       ),
       "Success! Every forecast day contains all supported activities!",
       "Fail! At least one forecast day does not contain all supported activities!"

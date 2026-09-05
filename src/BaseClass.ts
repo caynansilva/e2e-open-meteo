@@ -1,26 +1,22 @@
 import { MockCityActivitiesFactory } from "src/fixtures/MockCityActivitiesFactory";
-import { CityActivity } from "./Types/index";
-import { ActivityManager } from "./PageObjects/CityActivities"
+import { ActivityManager } from "./PageObjects/CityActivities";
+import { CucumberWorld } from "./Support/CucumberWorld";
 
 export class BaseClass {
-    public testName: string;
-    public mockData: MockCityActivitiesFactory;
-    public activityObject: CityActivity;
-    public actMgr: ActivityManager;
+    public readonly mockData = new MockCityActivitiesFactory();
 
-    constructor() {
-        this.mockData = new MockCityActivitiesFactory();
-        this.actMgr = new ActivityManager();
+    protected createActivityManager(): ActivityManager {
+        return new ActivityManager();
     }
 
-    public logMessage(message: string): void {
-        console.log(message);
-    }
+    protected getRequiredData<T>(world: CucumberWorld, key: string): T {
+        const value = world.getData<T>(key);
 
-    public startTestMessage(): void {
-        this.logMessage(`----------------------------------------------`);
-        this.logMessage(`Starting tests for Scenario: ${this.testName}.`);
-        this.logMessage(`----------------------------------------------`);
+        if (value === undefined) {
+            throw new Error(`Scenario data "${key}" is not available.`);
+        }
+
+        return value;
     }
 
     public assert(

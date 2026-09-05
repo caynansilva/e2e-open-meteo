@@ -166,7 +166,24 @@ The current assumed error shape is:
 }
 ```
 
-The exact endpoint paths, HTTP status codes, and transport-level error contract are intentionally not defined because no system under test or API specification was provided.
+The client’s endpoint path, HTTP status handling, and transport-level error format are explicit assumptions until a formal API specification is available.
+
+## Activity Ranking API Client Configuration
+
+The reusable HTTP client reads its base URL from `ACTIVITY_RANKING_API_BASE_URL`:
+
+```bash
+ACTIVITY_RANKING_API_BASE_URL=http://localhost:3000
+```
+
+The current client assumption is a single `GET /activities` endpoint. Exact and partial city searches use the `city` query parameter, and partial searches may also send `limit`:
+
+```text
+/activities?city=London
+/activities?city=San&limit=2
+```
+
+The Activity Ranking API is intentionally not implemented in this repository. The client defines the expected HTTP boundary and will surface connection or HTTP errors until a real system under test is available. Open-Meteo remains outside the client and will be mocked at the production API's external dependency boundary later.
 
 ## Open-Meteo Dependency Strategy
 
@@ -288,9 +305,9 @@ This is a specification-first exercise and no system under test was supplied. Th
 
 ### Direct HTTP API scenarios are not implemented yet
 
-The current scenarios validate the expected contract and domain behaviour using controlled data rather than HTTP requests to a running Activity Ranking API.
+The current scenarios validate the expected contract and domain behaviour using controlled data rather than HTTP requests to a running Activity Ranking API. The `ActivityRankingApiClient` is available for future HTTP-backed Steps, but existing fixture-backed scenarios have not been migrated.
 
-When the API becomes available, the next layer should introduce an API client and execute these business scenarios against real HTTP responses.
+When the API becomes available, the next layer should wire these business scenarios to the existing `ActivityRankingApiClient` and execute them against real HTTP responses.
 
 ### Open-Meteo is not called directly
 

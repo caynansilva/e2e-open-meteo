@@ -1,28 +1,44 @@
 import { BaseClass } from "src/BaseClass";
+import type { CityActivity } from "src/Types";
+import {
+  CucumberWorld,
+  WORLD_DATA_KEYS
+} from "src/Support/CucumberWorld";
 
 export class Sc052ValidateActivityRankingOrderSteps extends BaseClass {
-  public requestedCityName: string;
-
-  constructor() {
-    super();
-    this.testName = "[SC-05.2] - Activities are ordered from highest to lowest suitability for each forecast day";
-    this.startTestMessage();
+  public THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_RANKING_ORDER_VALIDATION(
+    world: CucumberWorld
+  ): void {
+    world.setData(WORLD_DATA_KEYS.requestedCity, "London");
   }
 
-  public THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_RANKING_ORDER_VALIDATION(): void {
-    this.requestedCityName = "London";
-  }
-
-  public THE_API_RETURNS_THE_ORDERED_RANKINGS_RESPONSE(): void {
-    this.activityObject = this.mockData.returnWeatherSensitiveMockData(
-      this.requestedCityName
+  public THE_API_RETURNS_THE_ORDERED_RANKINGS_RESPONSE(
+    world: CucumberWorld
+  ): void {
+    const requestedCity = this.getRequiredData<string>(
+      world,
+      WORLD_DATA_KEYS.requestedCity
     );
-    this.actMgr.setCityActivities([this.activityObject]);
+    const activityResponse = this.mockData.returnWeatherSensitiveMockData(
+      requestedCity
+    );
+
+    world.setData(WORLD_DATA_KEYS.activityResponse, activityResponse);
   }
 
-  public VALIDATE_THAT_THE_ACTIVITIES_FOR_EACH_FORECAST_DAY_ARE_ORDERED_FROM_HIGHEST_TO_LOWEST_SUITABILITY(): void {
+  public VALIDATE_THAT_THE_ACTIVITIES_FOR_EACH_FORECAST_DAY_ARE_ORDERED_FROM_HIGHEST_TO_LOWEST_SUITABILITY(
+    world: CucumberWorld
+  ): void {
+    const activityResponse = this.getRequiredData<CityActivity>(
+      world,
+      WORLD_DATA_KEYS.activityResponse
+    );
+    const activityManager = this.createActivityManager();
+
     this.assert(
-      this.actMgr.assertActivitiesAreRankedBySuitability(this.activityObject),
+      activityManager.assertActivitiesAreRankedBySuitability(
+        activityResponse
+      ),
       "Success! Activities are ordered from highest to lowest suitability every forecast day!",
       "Fail! Activities are not ordered from highest to lowest suitability every forecast day!"
     );

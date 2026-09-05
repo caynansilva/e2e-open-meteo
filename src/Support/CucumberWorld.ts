@@ -1,5 +1,17 @@
 import { IWorldOptions, setWorldConstructor, World } from "@cucumber/cucumber";
 
+export const WORLD_DATA_KEYS = {
+  scenarioName: "scenarioName",
+  scenarioStartTime: "scenarioStartTime",
+  requestedCity: "requestedCity",
+  partialCityName: "partialCityName",
+  maximumResults: "maximumResults",
+  activityResponse: "activityResponse",
+  searchResults: "searchResults",
+  invalidCityName: "invalidCityName",
+  errorResponse: "errorResponse"
+} as const;
+
 export class CucumberWorld extends World {
   public testData: Record<string, unknown> = {};
 

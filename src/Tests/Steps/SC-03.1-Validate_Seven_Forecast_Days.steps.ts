@@ -1,33 +1,52 @@
 import { BaseClass } from "src/BaseClass";
+import type { CityActivity } from "src/Types";
+import {
+  CucumberWorld,
+  WORLD_DATA_KEYS
+} from "src/Support/CucumberWorld";
 
 export class Sc031ValidateSevenForecastDaysSteps extends BaseClass {
-  public requestedCityName: string;
-
-  constructor() {
-    super();
-    this.testName = "[SC-03.1] - Response contains exactly 7 forecast days";
-    this.startTestMessage();
+  public THE_USER_SENDS_A_REQUEST_FOR_A_VALID_CITY_FOR_THE_SEVEN_DAY_FORECAST(
+    world: CucumberWorld
+  ): void {
+    world.setData(WORLD_DATA_KEYS.requestedCity, "London");
   }
 
-  public THE_USER_SENDS_A_REQUEST_FOR_A_VALID_CITY_FOR_THE_SEVEN_DAY_FORECAST(): void {
-    this.requestedCityName = "London";
-  }
-
-  public THE_API_RETURNS_THE_SEVEN_DAY_FORECAST_RESPONSE(): void {
-    this.activityObject = this.mockData.returnWeatherSensitiveMockData(
-      this.requestedCityName
+  public THE_API_RETURNS_THE_SEVEN_DAY_FORECAST_RESPONSE(
+    world: CucumberWorld
+  ): void {
+    const requestedCity = this.getRequiredData<string>(
+      world,
+      WORLD_DATA_KEYS.requestedCity
     );
-    this.actMgr.setCityActivities([this.activityObject]);
+    const activityResponse = this.mockData.returnWeatherSensitiveMockData(
+      requestedCity
+    );
+
+    world.setData(WORLD_DATA_KEYS.activityResponse, activityResponse);
   }
 
-  public VALIDATE_THAT_THE_RESPONSE_CONTAINS_EXACTLY_INT_FORECAST_DAYS(expectedDays: number): void {
+  public VALIDATE_THAT_THE_RESPONSE_CONTAINS_EXACTLY_INT_FORECAST_DAYS(
+    world: CucumberWorld,
+    expectedDays: number
+  ): void {
+    const activityResponse = this.getRequiredData<CityActivity>(
+      world,
+      WORLD_DATA_KEYS.activityResponse
+    );
+    const activityManager = this.createActivityManager();
+
     this.assert(
-      this.actMgr.assertForecastHasExactlyDays(
-        this.activityObject,
+      activityManager.assertForecastHasExactlyDays(
+        activityResponse,
         expectedDays
       ),
-      `Success! The response contains exactly ${expectedDays} forecast days!`,
-      `Fail! The response does not contain exactly ${expectedDays} forecast days!`
+      "Success! The response contains exactly " +
+        expectedDays +
+        " forecast days!",
+      "Fail! The response does not contain exactly " +
+        expectedDays +
+        " forecast days!"
     );
   }
 }
