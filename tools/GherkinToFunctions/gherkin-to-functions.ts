@@ -203,26 +203,19 @@ ${renderedBindings}
 
 function transformGherkinToSteps(
   gherkinText: string,
-  featureName: string,
-  cucumberWorldImportPath: string = "../../Support/CucumberWorld"
+  featureName: string
 ): string {
   const bindings = createBindings(gherkinText);
   const requiresDataTable = bindings.some((binding) => binding.hasDataTable);
   const cucumberImports = requiresDataTable
-    ? "import { DataTable, world as cucumberWorld } from \"@cucumber/cucumber\";"
-    : "import { world as cucumberWorld } from \"@cucumber/cucumber\";";
+    ? "import type { DataTable } from \"@cucumber/cucumber\";"
+    : "";
   const className = toStepsClassName(featureName);
   const commands = bindings.map(renderStepCommand).join("\n\n");
 
   return `// Steps generated from: ${featureName}
 ${cucumberImports}
-import { CucumberWorld } from "${cucumberWorldImportPath}";
-
 export class ${className} {
-  private get world(): CucumberWorld {
-    return cucumberWorld as CucumberWorld;
-  }
-
 ${commands}
 }
 `;
@@ -262,12 +255,8 @@ function processFeatureFile(
   const stepsPath = path.join(stepsDir, `${baseName}.steps.ts`);
   const relativeStepsImport = path.relative(path.dirname(specPath), stepsPath).replace(/\\/g, "/").replace(/\.ts$/, "");
   const stepsImportPath = relativeStepsImport.startsWith(".") ? relativeStepsImport : `./${relativeStepsImport}`;
-  const relativeWorldImport = path.relative(path.dirname(stepsPath), path.join("src", "Support", "CucumberWorld.ts"))
-    .replace(/\\/g, "/")
-    .replace(/\.ts$/, "");
-  const cucumberWorldImportPath = relativeWorldImport.startsWith(".") ? relativeWorldImport : `./${relativeWorldImport}`;
   const specContent = transformGherkinToFunctions(gherkinContent, featureName, stepsImportPath);
-  const stepsContent = transformGherkinToSteps(gherkinContent, featureName, cucumberWorldImportPath);
+  const stepsContent = transformGherkinToSteps(gherkinContent, featureName);
   const wasWritten = writeGeneratedPair(specPath, stepsPath, specContent, stepsContent, shouldForce);
 
   if (wasWritten) {

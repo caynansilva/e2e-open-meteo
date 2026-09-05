@@ -1,44 +1,27 @@
 import { BaseClass } from "src/BaseClass";
 import type { CityActivity } from "src/Types";
-import {
-  CucumberWorld,
-  WORLD_DATA_KEYS
-} from "src/Support/CucumberWorld";
 
 export class Sc053ValidateSuitabilityValueRangeSteps extends BaseClass {
-  public THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_SUITABILITY_RANGE_VALIDATION(
-    world: CucumberWorld
-  ): void {
-    world.setData(WORLD_DATA_KEYS.requestedCity, "London");
+  public requestedCity = "";
+  public activityResponse!: CityActivity;
+
+  public THE_USER_REQUESTS_THE_FORECAST_ACTIVITY_RANKINGS_FOR_SUITABILITY_RANGE_VALIDATION(): void {
+    this.requestedCity = "London";
   }
 
-  public async THE_API_RETURNS_THE_SUITABILITY_RANGE_RESPONSE(
-    world: CucumberWorld
-  ): Promise<void> {
-    const requestedCity = this.getRequiredData<string>(
-      world,
-      WORLD_DATA_KEYS.requestedCity
+  public async THE_API_RETURNS_THE_SUITABILITY_RANGE_RESPONSE(): Promise<void> {
+    this.activityResponse = await this.activityRankingClient.getActivityRanking(
+      this.requestedCity
     );
-    const activityResponse =
-      await this.activityRankingClient.getActivityRanking(requestedCity);
-
-    world.setData(WORLD_DATA_KEYS.activityResponse, activityResponse);
   }
 
   public VALIDATE_THAT_ALL_ACTIVITY_SUITABILITY_VALUES_ARE_BETWEEN_INT_AND_INT(
-    world: CucumberWorld,
     minimumSuitability: number,
     maximumSuitability: number
   ): void {
-    const activityResponse = this.getRequiredData<CityActivity>(
-      world,
-      WORLD_DATA_KEYS.activityResponse
-    );
-    const activityManager = this.createActivityManager();
-
     this.assert(
-      activityManager.assertActivitySuitabilityValuesWithinRange(
-        activityResponse,
+      this.actMgr.assertActivitySuitabilityValuesWithinRange(
+        this.activityResponse,
         minimumSuitability,
         maximumSuitability
       ),

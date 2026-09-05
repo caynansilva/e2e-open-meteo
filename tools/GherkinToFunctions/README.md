@@ -45,7 +45,7 @@ const steps = new ActivityRankingApiSteps();
 When("I request activity rankings for {string}", (city: string) => steps.I_REQUEST_ACTIVITY_RANKINGS_FOR_STRING(city));
 ```
 
-The generated Steps class exposes the current scenario through the official Cucumber `world` proxy and creates uppercase command stubs that fail explicitly until implemented.
+The generated Steps class creates uppercase command stubs that fail explicitly until implemented. Scenario state should be added as strongly typed properties on the Steps class.
 
 Quoted values become `{string}` and integer values become `{int}`. Duplicate expressions are emitted once. `And` and `But` reuse the preceding effective keyword, so no `And` binding or custom Step Class is generated.
 
@@ -60,7 +60,7 @@ The generator emits only the bindings and Steps skeleton needed by Cucumber and 
    ↓
 Native Cucumber Given / When / Then bindings
    ↓
-Steps class with minimal CucumberWorld proxy
+   Steps class with typed scenario properties
    ↓
 Page Object or API Client
    ↓

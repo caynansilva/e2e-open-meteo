@@ -1,99 +1,61 @@
 import { BaseClass } from "src/BaseClass";
 import type { CityActivity } from "src/Types";
-import {
-  CucumberWorld,
-  WORLD_DATA_KEYS
-} from "src/Support/CucumberWorld";
 
 export class Sc014ValidateCitySearchResultLimitSteps extends BaseClass {
-  public THE_USER_SENDS_A_REQUEST_WITH_A_VALID_PARTIAL_CITY_NAME_FOR_A_LIMITED_RESULT_SET(
-    world: CucumberWorld
-  ): void {
-    world.setData(WORLD_DATA_KEYS.partialCityName, "San");
-    world.setData(WORLD_DATA_KEYS.maximumResults, 2);
+  public partialCityName = "";
+  public maximumResults = 0;
+  public searchResults!: CityActivity[];
+
+  public THE_USER_SENDS_A_REQUEST_WITH_A_VALID_PARTIAL_CITY_NAME_FOR_A_LIMITED_RESULT_SET(): void {
+    this.partialCityName = "San";
+    this.maximumResults = 2;
   }
 
-  public async THE_API_RETURNS_THE_LIMITED_PARTIAL_CITY_RESPONSE(
-    world: CucumberWorld
-  ): Promise<void> {
-    const partialCityName = this.getRequiredData<string>(
-      world,
-      WORLD_DATA_KEYS.partialCityName
+  public async THE_API_RETURNS_THE_LIMITED_PARTIAL_CITY_RESPONSE(): Promise<void> {
+    this.searchResults = await this.activityRankingClient.searchCities(
+      this.partialCityName,
+      this.maximumResults
     );
-    const maximumResults = this.getRequiredData<number>(
-      world,
-      WORLD_DATA_KEYS.maximumResults
-    );
-    const searchResults = await this.activityRankingClient.searchCities(
-      partialCityName,
-      maximumResults
-    );
-
-    world.setData(WORLD_DATA_KEYS.searchResults, searchResults);
   }
 
-  public VALIDATE_THAT_MATCHING_LOCATIONS_ARE_RETURNED(
-    world: CucumberWorld
-  ): void {
-    const partialCityName = this.getRequiredData<string>(
-      world,
-      WORLD_DATA_KEYS.partialCityName
-    );
-    const searchResults = this.getRequiredData<CityActivity[]>(
-      world,
-      WORLD_DATA_KEYS.searchResults
-    );
-    const activityManager = this.createActivityManager();
-
+  public VALIDATE_THAT_MATCHING_LOCATIONS_ARE_RETURNED(): void {
     this.assert(
-      activityManager.assertPartialCityResultsMatch(
-        partialCityName,
-        searchResults
+      this.actMgr.assertPartialCityResultsMatch(
+        this.partialCityName,
+        this.searchResults
       ),
       "Success! All returned locations match the partial city name \"" +
-        partialCityName +
+        this.partialCityName +
         "\"!",
       "Fail! Not all returned locations match the partial city name \"" +
-        partialCityName +
+        this.partialCityName +
         "\"!"
     );
   }
 
-  public VALIDATE_THAT_THE_NUMBER_OF_RETURNED_RESULTS_IS_LIMITED(
-    world: CucumberWorld
-  ): void {
-    const searchResults = this.getRequiredData<CityActivity[]>(
-      world,
-      WORLD_DATA_KEYS.searchResults
-    );
-    const maximumResults = this.getRequiredData<number>(
-      world,
-      WORLD_DATA_KEYS.maximumResults
-    );
-    const activityManager = this.createActivityManager();
-
+  public VALIDATE_THAT_THE_NUMBER_OF_RETURNED_RESULTS_IS_LIMITED(): void {
     this.assert(
-      activityManager.assertPartialCityResultsAreLimited(
-        searchResults,
-        maximumResults
+      this.actMgr.assertPartialCityResultsAreLimited(
+        this.searchResults,
+        this.maximumResults
       ),
       "Success! The number of returned locations does not exceed the limit of " +
-        maximumResults +
+        this.maximumResults +
         "!",
       "Fail! The number of returned locations exceeds the limit of " +
-        maximumResults +
+        this.maximumResults +
         "!"
     );
     this.assert(
-      activityManager.assertPartialCityResultsReachLimit(
-        searchResults,
-        maximumResults
+      this.actMgr.assertPartialCityResultsReachLimit(
+        this.searchResults,
+        this.maximumResults
       ),
       "Success! The response returns exactly " +
-        maximumResults +
+        this.maximumResults +
         " locations when more matches are available!",
       "Fail! The response does not return exactly " +
-        maximumResults +
+        this.maximumResults +
         " locations when more matches are available!"
     );
   }

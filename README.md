@@ -56,7 +56,7 @@ ActivityManager reusable validations
 - **ActivityManager** contains reusable domain validations.
 - **MockCityActivitiesFactory** creates controlled city, forecast, activity, and error responses.
 - **ActivityRankingClient** provides the same async boundary for fixture and SUT execution.
-- **CucumberWorld** provides scenario-scoped state shared between steps.
+- **Steps classes** keep scenario state in strongly typed properties; `parallel: 0` keeps execution deterministic.
 
 ## Project Structure
 
@@ -91,14 +91,13 @@ src/
 
   Tests/
     specs/
-      ActivityRankingShared.spec.ts
+      SC-06-API_Contract_Shared.spec.ts
       SC-*.spec.ts
     Steps/
-      ActivityRankingShared.steps.ts
+      APIScenarariosSharedSteps.steps.ts
       SC-*.steps.ts
 
   Support/
-    CucumberWorld.ts
     hooks.ts
 
   fixtures/

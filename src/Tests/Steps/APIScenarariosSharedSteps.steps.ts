@@ -1,9 +1,5 @@
 import { ActivityRankingApiClient } from "../../Api/ActivityRankingApiClient";
 import { BaseClass } from "../../BaseClass";
-import {
-    CucumberWorld,
-    WORLD_DATA_KEYS
-} from "../../Support/CucumberWorld";
 import type {
     ActivityRankingHttpResponse,
     ActivityRankingQuery,
@@ -12,11 +8,10 @@ import type {
 
 export class APIScenarariosSharedSteps extends BaseClass {
     protected readonly apiClient = new ActivityRankingApiClient();
+    protected static httpResponse: ActivityRankingHttpResponse | undefined;
 
-    public async THE_ACTIVITY_RANKING_API_ENDPOINT_IS_AVAILABLE(
-        _world: CucumberWorld
-    ): Promise<void> {
-        const isAvailable: boolean = await this.apiClient.isApiEndpointAvailable();
+    public async THE_ACTIVITY_RANKING_API_ENDPOINT_IS_AVAILABLE(): Promise<void> {
+        const isAvailable = await this.apiClient.isApiEndpointAvailable();
         this.assert(
             isAvailable,
             "Success! The Activity Ranking API base URL is configured!",
@@ -24,18 +19,12 @@ export class APIScenarariosSharedSteps extends BaseClass {
         );
     }
 
-    public THE_ACTIVITY_RANKING_API_IS_AVAILABLE(
-        _world: CucumberWorld
-    ): void {
-        this.THE_ACTIVITY_RANKING_API_ENDPOINT_IS_AVAILABLE(_world);
+    public async THE_ACTIVITY_RANKING_API_IS_AVAILABLE(): Promise<void> {
+        await this.THE_ACTIVITY_RANKING_API_ENDPOINT_IS_AVAILABLE();
     }
 
-    public VALIDATE_THAT_THE_RESPONSE_STATUS_IS_INT(
-        world: CucumberWorld,
-        expectedStatus: number
-    ): void {
-        const response = this.getHttpResponse(world);
-
+    public VALIDATE_THAT_THE_RESPONSE_STATUS_IS_INT(expectedStatus: number): void {
+        const response = this.getHttpResponse();
         this.assert(
             this.apiClient.assertStatusCode(response, expectedStatus),
             `Success! The response status is ${expectedStatus}!`,
@@ -43,11 +32,8 @@ export class APIScenarariosSharedSteps extends BaseClass {
         );
     }
 
-    public VALIDATE_THAT_THE_RESPONSE_CONTAINS_A_CLEAR_CLIENT_ERROR(
-        world: CucumberWorld
-    ): void {
-        const response = this.getHttpResponse(world);
-
+    public VALIDATE_THAT_THE_RESPONSE_CONTAINS_A_CLEAR_CLIENT_ERROR(): void {
+        const response = this.getHttpResponse();
         this.assert(
             this.apiClient.assertClientErrorResponse(response),
             "Success! The response contains a clear client error!",
@@ -56,33 +42,31 @@ export class APIScenarariosSharedSteps extends BaseClass {
     }
 
     protected async sendRawRequest(
-        world: CucumberWorld,
         method: string,
         path: string,
         query?: ActivityRankingQuery
     ): Promise<void> {
-        const response = await this.apiClient.sendRequest(method, path, query);
-
-        world.setData(WORLD_DATA_KEYS.httpResponse, response);
-    }
-
-    protected getHttpResponse(world: CucumberWorld): ActivityRankingHttpResponse {
-        return this.getRequiredData<ActivityRankingHttpResponse>(
-            world,
-            WORLD_DATA_KEYS.httpResponse
+        APIScenarariosSharedSteps.httpResponse = await this.apiClient.sendRequest(
+            method,
+            path,
+            query
         );
     }
 
-    protected assertCityNotFoundResponse(
-        world: CucumberWorld,
-        city: string
-    ): void {
-        const response = this.getHttpResponse(world);
-        const errorResponse = response.body as CityNotFoundError;
-        const activityManager = this.createActivityManager();
+    protected getHttpResponse(): ActivityRankingHttpResponse {
+        const response = APIScenarariosSharedSteps.httpResponse;
 
+        if (!response) {
+            throw new Error("The HTTP response is not available.");
+        }
+
+        return response;
+    }
+
+    protected assertCityNotFoundResponse(city: string): void {
+        const errorResponse = this.getHttpResponse().body as CityNotFoundError;
         this.assert(
-            activityManager.assertCityNotFoundError(errorResponse, city),
+            this.actMgr.assertCityNotFoundError(errorResponse, city),
             `Success! The response indicates that "${city}" was not found!`,
             `Fail! The response does not indicate that "${city}" was not found!`
         );

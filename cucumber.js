@@ -13,7 +13,6 @@ module.exports = {
     paths: explicitFeaturePath ? [] : ["e2e-tests/**/*.feature"],
     requireModule: ["ts-node/register", "tsconfig-paths/register"],
     require: [
-      "src/Support/CucumberWorld.ts",
       "src/Support/hooks.ts",
       ...requireSpecs
     ],

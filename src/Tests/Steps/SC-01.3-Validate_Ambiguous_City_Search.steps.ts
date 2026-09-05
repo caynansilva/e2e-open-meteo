@@ -1,63 +1,40 @@
 import { BaseClass } from "src/BaseClass";
 import type { CityActivity } from "src/Types";
-import {
-  CucumberWorld,
-  WORLD_DATA_KEYS
-} from "src/Support/CucumberWorld";
 
 export class Sc013ValidateAmbiguousCitySearchSteps extends BaseClass {
-  public THE_USER_SENDS_A_REQUEST_WITH_A_VALID_PARTIAL_CITY_NAME_FOR_AMBIGUOUS_MATCHES(
-    world: CucumberWorld
-  ): void {
-    world.setData(WORLD_DATA_KEYS.partialCityName, "San");
+  public partialCityName = "";
+  public searchResults!: CityActivity[];
+
+  public THE_USER_SENDS_A_REQUEST_WITH_A_VALID_PARTIAL_CITY_NAME_FOR_AMBIGUOUS_MATCHES(): void {
+    this.partialCityName = "San";
   }
 
-  public async THE_API_RETURNS_THE_AMBIGUOUS_PARTIAL_CITY_RESPONSE(
-    world: CucumberWorld
-  ): Promise<void> {
-    const partialCityName = this.getRequiredData<string>(
-      world,
-      WORLD_DATA_KEYS.partialCityName
+  public async THE_API_RETURNS_THE_AMBIGUOUS_PARTIAL_CITY_RESPONSE(): Promise<void> {
+    this.searchResults = await this.activityRankingClient.searchCities(
+      this.partialCityName
     );
-    const searchResults = await this.activityRankingClient.searchCities(
-      partialCityName
-    );
-
-    world.setData(WORLD_DATA_KEYS.searchResults, searchResults);
   }
 
-  public VALIDATE_THAT_MULTIPLE_MATCHING_LOCATIONS_ARE_RETURNED(
-    world: CucumberWorld
-  ): void {
-    const partialCityName = this.getRequiredData<string>(
-      world,
-      WORLD_DATA_KEYS.partialCityName
-    );
-    const searchResults = this.getRequiredData<CityActivity[]>(
-      world,
-      WORLD_DATA_KEYS.searchResults
-    );
-    const activityManager = this.createActivityManager();
-
+  public VALIDATE_THAT_MULTIPLE_MATCHING_LOCATIONS_ARE_RETURNED(): void {
     this.assert(
-      activityManager.assertPartialCityResultsMatch(
-        partialCityName,
-        searchResults
+      this.actMgr.assertPartialCityResultsMatch(
+        this.partialCityName,
+        this.searchResults
       ),
       "Success! All returned locations match the partial city name \"" +
-        partialCityName +
+        this.partialCityName +
         "\"!",
       "Fail! Not all returned locations match the partial city name \"" +
-        partialCityName +
+        this.partialCityName +
         "\"!"
     );
     this.assert(
-      activityManager.assertMultiplePartialCityResults(searchResults),
+      this.actMgr.assertMultiplePartialCityResults(this.searchResults),
       "Success! Multiple locations were returned for the partial city name \"" +
-        partialCityName +
+        this.partialCityName +
         "\"!",
       "Fail! Multiple locations were not returned for the partial city name \"" +
-        partialCityName +
+        this.partialCityName +
         "\"!"
     );
   }
