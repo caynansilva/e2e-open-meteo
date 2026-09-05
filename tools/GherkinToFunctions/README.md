@@ -7,12 +7,13 @@ This generator creates a matching Cucumber binding spec and Steps-class skeleton
 Generate one file:
 
 ```bash
-npm run g2f e2e-tests/activity-ranking.feature
+npm run g2f -- e2e-tests/SC-01-Validate_City_Search.feature
 ```
 
-Generate bindings for every feature below a directory:
+Generate bindings for every feature in a directory:
 
 ```bash
+npm run g2f -- e2e-tests
 npm run g2f -- --dir e2e-tests
 ```
 
@@ -26,7 +27,7 @@ src/Tests/Steps/{feature-name}.steps.ts
 Use `--force` to intentionally replace an existing binding file:
 
 ```bash
-npm run g2f e2e-tests/activity-ranking.feature --force
+npm run g2f -- e2e-tests/SC-01-Validate_City_Search.feature --force
 ```
 
 Without `--force`, the generator preserves both outputs when either file already exists. Use `--force` only when intentionally replacing the pair.

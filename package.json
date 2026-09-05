@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@cucumber/cucumber": "^12.5.0",
-    "@types/node": "^20.10.0",
+    "@types/node": "^20.19.43",
     "cross-env": "^7.0.3",
     "eslint": "^9.0.0",
     "jiti": "^2.7.0",

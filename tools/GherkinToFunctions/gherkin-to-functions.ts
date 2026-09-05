@@ -249,7 +249,8 @@ function processFeatureFile(
 ): void {
   const stat = fs.statSync(featureFilePath);
   if (stat.isDirectory()) {
-    throw new Error(`\"${featureFilePath}\" is a directory. Use --dir flag.`);
+    processAllFeatureFiles(featureFilePath, specsDir, stepsDirOrForce, force);
+    return;
   }
 
   const gherkinContent = fs.readFileSync(featureFilePath, "utf8");
@@ -322,40 +323,53 @@ function printHelp(): void {
 Gherkin to native Cucumber spec and Steps generator
 
 Usage:
-  npm run g2f <feature-file>
-  npm run g2f -- --dir <feature-directory>
-  npm run g2f <feature-file> --force
+  npm run g2f -- <feature-file>
+  npm run g2f -- e2e-tests
+  npm run g2f -- --dir e2e-tests
+  npm run g2f -- <feature-file> --force
 
 Outputs:
   src/Tests/specs/{name}.spec.ts
   src/Tests/Steps/{name}.steps.ts
 
 Existing output pairs are preserved unless --force is supplied.
+Pass flags after \`--\` so npm does not treat them as npm config.
 `);
 }
 
+function resolveInputPath(args: string[]): string | undefined {
+  const dirEquals = args.find((argument) => argument.startsWith("--dir="));
+  if (dirEquals) {
+    return dirEquals.slice("--dir=".length);
+  }
+
+  const dirFlagIndex = args.indexOf("--dir");
+  if (dirFlagIndex >= 0) {
+    const inputDir = args[dirFlagIndex + 1];
+    return inputDir && !inputDir.startsWith("--") ? inputDir : undefined;
+  }
+
+  return args.find((argument) => !argument.startsWith("--"));
+}
+
 function runCli(args: string[]): void {
-  if (args.length === 0) {
+  if (args.length === 0 || args.includes("--help") || args.includes("-h")) {
     printHelp();
     return;
   }
 
   const force = args.includes("--force");
-  const positionalArgs = args.filter((argument) => argument !== "--force");
-  if (positionalArgs[0] === "--dir") {
-    const inputDir = positionalArgs[1];
-    if (!inputDir || !fs.existsSync(inputDir)) {
-      throw new Error("An existing input directory is required after --dir.");
-    }
-    processAllFeatureFiles(inputDir, DEFAULT_SPECS_DIR, DEFAULT_STEPS_DIR, force);
+  const inputPath = resolveInputPath(args);
+  if (!inputPath || !fs.existsSync(inputPath)) {
+    throw new Error("An existing feature file or directory is required.");
+  }
+
+  if (fs.statSync(inputPath).isDirectory()) {
+    processAllFeatureFiles(inputPath, DEFAULT_SPECS_DIR, DEFAULT_STEPS_DIR, force);
     return;
   }
 
-  const inputFile = positionalArgs[0];
-  if (!inputFile || !fs.existsSync(inputFile)) {
-    throw new Error("An existing feature file is required.");
-  }
-  processFeatureFile(inputFile, DEFAULT_SPECS_DIR, DEFAULT_STEPS_DIR, force);
+  processFeatureFile(inputPath, DEFAULT_SPECS_DIR, DEFAULT_STEPS_DIR, force);
 }
 
 if (require.main === module) {

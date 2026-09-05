@@ -29,8 +29,8 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "types": ["node"],
 
-    //Property 'searchButton' has no initializer and is not definitely assigned in the constructor.ts(2564)
     "strictPropertyInitialization": false,
     "noPropertyAccessFromIndexSignature": false,
 
@@ -38,10 +38,7 @@
     /* Path Aliases */
     "baseUrl": ".",
     "paths": {
-      "@core/*": ["./src/Core/*"],
       "@utils/*": ["./src/Utils/*"],
-      "@types/*": ["./src/Types/*"],
-      "@factories/*": ["./src/Factories/*"],
       "@support/*": ["./src/Support/*"]
     },
 

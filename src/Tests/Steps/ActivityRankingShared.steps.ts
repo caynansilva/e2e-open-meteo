@@ -1,7 +1,7 @@
 import { world as cucumberWorld } from "@cucumber/cucumber";
 import assert from "node:assert/strict";
-import { MockCityActivitiesFactory } from "../../../fixtures/MockCityActivitiesFactory";
-import { CityActivities } from "../../PageObjects/CityActivity/CityActivities";
+import { MockCityActivitiesFactory } from "../../fixtures/MockCityActivitiesFactory";
+import { CityActivities } from "../../PageObjects/CityActivities";
 import { CucumberWorld } from "../../Support/CucumberWorld";
 import type { CityActivity, CityNotFoundError } from "../../Types";
 
